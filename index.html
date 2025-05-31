@@ -1356,24 +1356,3 @@ Voici le contenu du cours :
     </script>
 </body>
 </html>
-```
-
-**Points clés des modifications :**
-
-1.  **Prompt Gemini (`GEMINI_PROMPT`)** :
-    * J'ai reformulé l'instruction pour les QCM :
-      `**Instruction importante pour les QCM :** La valeur du champ "correctAnswer" doit être une copie **exacte** de l'une des chaînes de caractères fournies dans le tableau "options" pour cette question. Si une option de réponse contient un marqueur de citation (par exemple, \`[cite: 1]\`), et que cette option est la bonne réponse, alors le champ "correctAnswer" doit aussi inclure ce marqueur de citation tel quel. N'ajoutez aucun texte supplémentaire ou modification à la "correctAnswer" qui ne soit pas présent tel quel dans les "options".`
-    * Cela devrait clarifier pour Gemini que si `[cite: X]` fait partie intégrante du texte de l'option correcte, il doit aussi être dans `correctAnswer`.
-
-2.  **Fonction `submitQcm()`** :
-    * La ligne `const cleanedStoredCorrectAnswer = currentQ.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();` a été **supprimée**.
-    * La comparaison se fait maintenant directement : `const isCorrect = selectedQcmOption === currentQ.correctAnswer;`.
-    * L'affichage de la bonne réponse en cas d'erreur utilise aussi `currentQ.correctAnswer` directement.
-    * La mise en évidence de la bonne réponse dans la liste des options utilise également `currentQ.correctAnswer`.
-
-3.  **Validation des QCM (`fetchAndValidateCourseContent`, `saveNewCourse`, `processImport`)** :
-    * La logique de validation ici a été mise à jour pour s'attendre à ce que `correctAnswer` soit une copie exacte d'une des `options`. La ligne `const cleanedCorrectAnswer = q.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();` a été **supprimée** de ces fonctions de validation. La validation est maintenant `return q.options.includes(q.correctAnswer);`.
-
-Avec ces ajustements, l'outil devrait maintenant correctement gérer les `correctAnswer` qui incluent des marqueurs de citation, à condition que Gemini les fournisse de manière cohérente dans les `options` et `correctAnswer` comme demandé dans le prompt.
-
-N'oubliez pas de vérifier les constantes de configuration GitHub (`GITHUB_USER_REPO`, `GITHUB_BRANCH`, `GITHUB_COURSES_DIRECTORY_PATH`) si vous les avez modifié
