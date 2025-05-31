@@ -30,7 +30,7 @@
         .hidden { display: none; }
         .question-counter { font-size: 0.9em; color: #6b7280; margin-bottom: 1rem; text-align: center; }
         #generatedJsonOutputTextarea, #githubInstructionsContent, #manualGeminiPromptTextarea { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
-        #generatedJsonOutputTextarea { min-height: 150px; } /* Specific to the main JSON input */
+        #generatedJsonOutputTextarea { min-height: 150px; } 
         .copy-feedback { font-size: 0.8rem; color: #4b5563; margin-left: 8px; }
         .course-button-container { display: inline-flex; align-items: center; margin-right: 8px; margin-bottom: 8px; }
         .delete-course-btn { background-color: transparent; border: none; color: #ef4444; font-size: 1.2em; font-weight: bold; margin-left: 5px; cursor: pointer; padding: 0 5px; line-height: 1; }
@@ -63,20 +63,24 @@
 
         <section id="welcomeSection" class="py-10">
             <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Choisissez un cours à réviser :</h2>
+            
             <div>
                 <h3 class="course-section-title">Cours partagés (depuis GitHub) :</h3>
                 <div id="githubCourseListContainer" class="flex flex-wrap justify-center md:justify-start"></div>
                  <p id="loadingMessage">Chargement des cours depuis GitHub...</p>
                  <p id="noGitHubCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours partagé n'a pu être chargé. Vérifiez la configuration et les fichiers sur GitHub.</p>
             </div>
+
             <div class="mt-6">
                 <h3 class="course-section-title">Vos cours personnels (stockés localement) :</h3>
                 <div id="localCourseListContainer" class="flex flex-wrap justify-center md:justify-start"></div>
                 <p id="noLocalCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours personnel ajouté pour le moment.</p>
             </div>
+
             <div class="text-center mt-8">
                 <button id="showAddCourseSectionBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md">Ajouter un cours personnel</button>
             </div>
+
             <div class="io-section text-center md:text-left">
                 <h3 class="text-center md:text-left">Gestion des données des cours :</h3>
                 <div class="flex flex-col md:flex-row justify-center md:justify-start space-y-2 md:space-y-0 md:space-x-3 mt-2">
@@ -106,7 +110,9 @@
         <div id="exportModal" class="modal hidden">
             <div class="modal-content">
                 <h3 class="modal-header">Exporter des Cours</h3>
-                <div id="exportCourseList" class="modal-body"></div>
+                <div id="exportCourseList" class="modal-body">
+                    {/* Les cases à cocher des cours seront injectées ici */}
+                </div>
                 <div id="exportFeedback" class="text-sm text-red-500 my-2 text-center"></div>
                 <div class="modal-footer">
                     <button id="downloadSelectedCoursesBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Télécharger la sélection</button>
@@ -213,9 +219,11 @@
         let selectedQcmOption = null;
         const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; 
 
+        // !!! VÉRIFIEZ BIEN CES CONSTANTES !!!
         const GITHUB_USER_REPO = 'JulienLhui/cyoutilrevision'; 
         const GITHUB_BRANCH = 'main'; 
         const GITHUB_COURSES_DIRECTORY_PATH = 'cours'; 
+        // !!! ------------------------------------ !!!
 
         const mainTitle = document.getElementById('mainTitle');
         const welcomeSection = document.getElementById('welcomeSection');
@@ -226,7 +234,7 @@
         
         const addCourseSection = document.getElementById('addCourseSection');
         const newCourseNameInput = document.getElementById('newCourseName');
-        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea'); // Main JSON input
+        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea'); 
         const showManualPromptBtn = document.getElementById('showManualPromptBtn');
         const manualPromptContainer = document.getElementById('manualPromptContainer');
         const manualGeminiPromptTextarea = document.getElementById('manualGeminiPromptTextarea');
@@ -319,7 +327,7 @@ Voici le contenu de mon cours :
 [COLLEZ LE CONTENU DE VOTRE COURS ICI]`;
 
 
-        function loadUserCoursesFromLocalStorage() { /* ... (inchangée) ... */ 
+        function loadUserCoursesFromLocalStorage() { 
             console.log("LOCAL_STORAGE_LOAD: Tentative de chargement des cours utilisateur.");
             const storedUserCourses = localStorage.getItem(USER_COURSES_LOCAL_STORAGE_KEY);
             if (storedUserCourses) {
@@ -338,7 +346,7 @@ Voici le contenu de mon cours :
                 console.log("LOCAL_STORAGE_LOAD: Aucun cours utilisateur trouvé dans localStorage.");
             }
         }
-        function saveUserCoursesToLocalStorage() { /* ... (inchangée) ... */ 
+        function saveUserCoursesToLocalStorage() { 
             console.log("LOCAL_STORAGE_SAVE: Tentative de sauvegarde des cours utilisateur:", userCoursesData);
             try {
                 localStorage.setItem(USER_COURSES_LOCAL_STORAGE_KEY, JSON.stringify(userCoursesData));
@@ -350,7 +358,7 @@ Voici le contenu de mon cours :
                 setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
             }
         }
-        async function fetchAndValidateCourseContent(downloadUrl, fileNameForLogging) { /* ... (inchangée) ... */ 
+        async function fetchAndValidateCourseContent(downloadUrl, fileNameForLogging) { 
             console.log(`GITHUB_FETCH: Tentative de chargement du contenu de ${fileNameForLogging} depuis ${downloadUrl}`);
             try {
                 const response = await fetch(downloadUrl);
@@ -380,7 +388,7 @@ Voici le contenu de mon cours :
                 return null;
             }
         }
-        async function loadCoursesFromGitHub() { /* ... (inchangée) ... */ 
+        async function loadCoursesFromGitHub() { 
             console.log("GITHUB_FETCH: Début du chargement des cours partagés...");
             loadingMessage.classList.remove('hidden');
             noGitHubCoursesMessage.classList.add('hidden'); 
@@ -416,7 +424,6 @@ Voici le contenu de mon cours :
                 noGitHubCoursesMessage.classList.remove('hidden'); 
             }
 
-
             const coursePromises = filesToFetch.map(fileInfo => fetchAndValidateCourseContent(fileInfo.download_url, fileInfo.name));
             const results = await Promise.all(coursePromises);
 
@@ -433,13 +440,12 @@ Voici le contenu de mon cours :
                  console.warn("GITHUB_FETCH: Fichiers JSON détectés mais aucun cours partagé n'a pu être chargé correctement.");
                  noGitHubCoursesMessage.classList.remove('hidden');
             } else if (filesToFetch.length === 0 && GITHUB_COURSES_DIRECTORY_PATH) {
-                // Message déjà géré
             } else if (Object.keys(gitHubCoursesData).length > 0) {
                 noGitHubCoursesMessage.classList.add('hidden'); 
             }
         }
         
-        function showWelcomeScreen() { /* ... (inchangée) ... */ 
+        function showWelcomeScreen() { 
             mainTitle.textContent = "Mon Outil de Révision";
             welcomeSection.classList.remove('hidden');
             addCourseSection.classList.add('hidden');
@@ -463,7 +469,7 @@ Voici le contenu de mon cours :
             qcmSection.classList.add('hidden');
             
             newCourseNameInput.value = '';
-            generatedJsonOutputTextarea.value = ''; // C'est ici que l'utilisateur colle son JSON
+            generatedJsonOutputTextarea.value = ''; 
             adminPasswordInput.value = ''; 
             addCourseFeedback.classList.add('hidden');
             githubInstructionsDiv.classList.add('hidden');
@@ -475,7 +481,7 @@ Voici le contenu de mon cours :
                 githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
             }
         }
-        function populateCourseList() { /* ... (inchangée) ... */ 
+        function populateCourseList() { 
             githubCourseListContainer.innerHTML = ''; 
             localCourseListContainer.innerHTML = '';
             let localCoursesExist = false;
@@ -524,7 +530,7 @@ Voici le contenu de mon cours :
                 noLocalCoursesMessage.classList.remove('hidden');
             }
         }
-        function createCourseButton(key, title, sourceDataForColoring) { /* ... (inchangée) ... */ 
+        function createCourseButton(key, title, sourceDataForColoring) { 
             const button = document.createElement('button');
             button.dataset.course = key;
             button.classList.add('course-btn', 'btn', 'text-white', 'font-semibold', 'py-2', 'px-4', 'rounded-lg', 'shadow-md');
@@ -542,7 +548,7 @@ Voici le contenu de mon cours :
             });
             return button;
         }
-        function deleteUserCourse(courseKey, courseTitle) { /* ... (inchangée) ... */ 
+        function deleteUserCourse(courseKey, courseTitle) { 
             console.log(`LOCAL_STORAGE_DELETE: Suppression du cours utilisateur. Clé: ${courseKey}, Titre: ${courseTitle}`);
             delete userCoursesData[courseKey]; 
             saveUserCoursesToLocalStorage();
@@ -551,7 +557,7 @@ Voici le contenu de mon cours :
             ioFeedback.style.color = "orange";
             setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
         }
-        function showModeSelectionScreen() { /* ... (inchangée) ... */ 
+        function showModeSelectionScreen() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { 
                  console.error("Attempting to access non-existent course:", currentCourseKey);
@@ -566,7 +572,7 @@ Voici le contenu de mon cours :
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
         }
-        function showFlashcardsScreen() { /* ... (inchangée) ... */ 
+        function showFlashcardsScreen() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
             mainTitle.textContent = `Cartes Flash : ${combinedCourses[currentCourseKey].title}`;
@@ -575,7 +581,7 @@ Voici le contenu de mon cours :
             qcmSection.classList.add('hidden');
             displayFlashcard();
         }
-        function showQcmScreen() { /* ... (inchangée) ... */ 
+        function showQcmScreen() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
             mainTitle.textContent = `QCM : ${combinedCourses[currentCourseKey].title}`;
@@ -584,9 +590,8 @@ Voici le contenu de mon cours :
             qcmSection.classList.remove('hidden');
             displayQcm();
         }
-        function displayFlashcard() { /* ... (inchangée) ... */ 
+        function displayFlashcard() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
-            // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards) { 
                 flashcardQuestion.textContent = "Erreur : Données de flashcards non trouvées pour ce cours.";
                 flashcardElement.classList.add('hidden');
@@ -613,31 +618,25 @@ Voici le contenu de mon cours :
             flashcardElement.classList.remove('is-flipped');
             flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
             flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${courseFlashcards.length}`;
-            // if (flashcardElement.classList.contains('is-flipped')) {
-            //     explainAnswerBtn.classList.remove('hidden'); // Le bouton d'explication est retiré
-            // }
         }
-        function flipFlashcard() { /* ... (modifiée pour ne plus gérer le bouton d'explication) ... */ 
+        function flipFlashcard() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards || combinedCourses[currentCourseKey].flashcards.length === 0) return;
             flashcardElement.classList.toggle('is-flipped');
              if (flashcardElement.classList.contains('is-flipped')) {
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la question.";
-                // explainAnswerBtn.classList.remove('hidden'); // Le bouton d'explication est retiré
             } else {
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
-                // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             }
         }
-        function nextFlashcard() { /* ... (modifiée pour ne plus gérer le bouton d'explication) ... */ 
+        function nextFlashcard() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseFlashcards = combinedCourses[currentCourseKey].flashcards;
             if (!courseFlashcards || courseFlashcards.length === 0) return;
             currentFlashcardIndex = (currentFlashcardIndex + 1) % courseFlashcards.length;
-            // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             displayFlashcard();
         }
-        function displayQcm() { /* ... (inchangée) ... */ 
+        function displayQcm() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
              if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].qcm) { 
                 qcmQuestionElement.textContent = "Erreur : Données de QCM non trouvées pour ce cours.";
@@ -701,7 +700,7 @@ Voici le contenu de mon cours :
             selectedQcmOption = null; 
             submitQcmBtn.disabled = true; 
         }
-        function submitQcm() { /* ... (inchangée) ... */ 
+        function submitQcm() { 
             if (selectedQcmOption === null) {
                 qcmFeedback.textContent = "Veuillez sélectionner une réponse.";
                 qcmFeedback.className = 'feedback-message feedback-incorrect';
@@ -737,7 +736,7 @@ Voici le contenu de mon cours :
             submitQcmBtn.classList.add('hidden'); 
             nextQcmBtn.classList.remove('hidden'); 
         }
-        function nextQcm() { /* ... (inchangée) ... */ 
+        function nextQcm() { 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseQCMs = combinedCourses[currentCourseKey].qcm;
             if (!courseQCMs || courseQCMs.length === 0) return;
@@ -755,7 +754,7 @@ Voici le contenu de mon cours :
         
         function saveNewCourse() { 
             const courseName = newCourseNameInput.value.trim();
-            const courseDataJSON = generatedJsonOutputTextarea.value.trim(); // JSON est maintenant collé par l'utilisateur
+            const courseDataJSON = generatedJsonOutputTextarea.value.trim(); 
             const adminPass = adminPasswordInput.value; 
 
             addCourseFeedback.classList.add('hidden');
@@ -767,7 +766,7 @@ Voici le contenu de mon cours :
                 addCourseFeedback.classList.remove('hidden');
                 return;
             }
-            if (!courseDataJSON) { // Vérifier si le JSON a été collé
+            if (!courseDataJSON) { 
                 addCourseFeedback.textContent = "Veuillez coller les données JSON de votre cours.";
                 addCourseFeedback.className = 'feedback-message feedback-incorrect';
                 addCourseFeedback.classList.remove('hidden');
@@ -843,35 +842,91 @@ Voici le contenu de mon cours :
                 setTimeout(() => { showWelcomeScreen(); }, 2000);
             }
         }
-        function exportCourses() { /* ... (inchangée) ... */ 
-            const allCoursesToExport = {...gitHubCoursesData, ...userCoursesData}; 
-            if (Object.keys(allCoursesToExport).length === 0) {
-                ioFeedback.textContent = "Aucun cours à exporter.";
-                ioFeedback.style.color = "orange";
-                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+        function downloadJSON(data, filename) { 
+            if (!filename.endsWith('.json')) {
+                filename += '.json';
+            }
+            const jsonDataString = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonDataString], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function openExportModal() {
+            exportCourseList.innerHTML = ''; 
+            exportFeedback.textContent = '';
+            exportFeedback.classList.add('hidden');
+
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData};
+            if (Object.keys(combinedCourses).length === 0) {
+                exportCourseList.innerHTML = '<p class="text-sm text-gray-500">Aucun cours disponible à exporter.</p>';
+                downloadSelectedCoursesBtn.disabled = true;
+            } else {
+                downloadSelectedCoursesBtn.disabled = false;
+                Object.keys(combinedCourses).forEach(key => {
+                    const course = combinedCourses[key];
+                    const div = document.createElement('div');
+                    div.classList.add('flex', 'items-center', 'mb-2');
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = `export-${key}`;
+                    checkbox.value = key;
+                    checkbox.classList.add('form-checkbox', 'h-4', 'w-4', 'text-indigo-600', 'transition', 'duration-150', 'ease-in-out');
+                    const label = document.createElement('label');
+                    label.htmlFor = `export-${key}`;
+                    label.textContent = course.title;
+                    label.classList.add('ml-2', 'block', 'text-sm', 'leading-5', 'text-gray-900');
+                    div.appendChild(checkbox);
+                    div.appendChild(label);
+                    exportCourseList.appendChild(div);
+                });
+            }
+            exportModal.classList.remove('hidden');
+        }
+
+        function handleDownloadSelected() {
+            const selectedCoursesKeys = [];
+            exportCourseList.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                selectedCoursesKeys.push(checkbox.value);
+            });
+
+            if (selectedCoursesKeys.length === 0) {
+                exportFeedback.textContent = "Veuillez sélectionner au moins un cours à exporter.";
+                exportFeedback.classList.remove('hidden');
                 return;
             }
-            try {
-                const jsonData = JSON.stringify(allCoursesToExport, null, 2); 
-                const blob = new Blob([jsonData], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = 'mes_cours_revision_complets.json';
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                ioFeedback.textContent = "Tous les cours ont été exportés avec succès !";
+
+            exportFeedback.classList.add('hidden');
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData};
+            let downloadedCount = 0;
+
+            selectedCoursesKeys.forEach(key => {
+                const courseDataToExport = combinedCourses[key];
+                if (courseDataToExport) {
+                    const fileName = key.replace(/^user-/, '').replace(/-[0-9]+$/, '').replace(/[^a-z0-9_]/gi, '_') + '.json';
+                    downloadJSON(courseDataToExport, fileName);
+                    downloadedCount++;
+                }
+            });
+
+            if (downloadedCount > 0) {
+                ioFeedback.textContent = `${downloadedCount} cours exporté(s) avec succès !`;
                 ioFeedback.style.color = "green";
-            } catch (error) {
-                console.error("EXPORT_ERROR:", error);
-                ioFeedback.textContent = "Erreur lors de l'exportation des cours.";
-                ioFeedback.style.color = "red";
+            } else {
+                ioFeedback.textContent = "Aucun cours sélectionné n'a pu être exporté.";
+                 ioFeedback.style.color = "orange";
             }
+            exportModal.classList.add('hidden');
             setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
         }
-        async function processImport(fileContent, isGitHubUpload, pat) { /* ... (inchangée) ... */ 
+        
+        async function processImport(fileContent, isGitHubUpload, pat) { 
             let importedData;
             try {
                 importedData = JSON.parse(fileContent);
@@ -1050,7 +1105,7 @@ Voici le contenu de mon cours :
         showAddCourseSectionBtn.addEventListener('click', showAddCourseScreen);
         saveCourseBtn.addEventListener('click', saveNewCourse);
         backToWelcomeFromAddBtn.addEventListener('click', showWelcomeScreen);
-        
+                
         showManualPromptBtn.addEventListener('click', () => {
             manualPromptContainer.classList.toggle('hidden');
             if (!manualPromptContainer.classList.contains('hidden')) {
@@ -1065,23 +1120,7 @@ Voici le contenu de mon cours :
         if(copyGithubJsonBtn) { 
             copyGithubJsonBtn.addEventListener('click', () => {
                 const textToCopy = githubInstructionsContentElement.textContent;
-                copyGithubJsonFeedback.classList.add('hidden');
-                 if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(textToCopy)
-                        .then(() => {
-                            copyGithubJsonFeedback.textContent = "JSON Copié !";
-                            copyGithubJsonFeedback.style.color = "green";
-                            copyGithubJsonFeedback.classList.remove('hidden');
-                            setTimeout(() => { copyGithubJsonFeedback.classList.add('hidden'); }, 2000);
-                        })
-                        .catch(err => {
-                            console.warn("COPY_FALLBACK: navigator.clipboard.writeText a échoué: ", err);
-                            fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié (fallback) !", "Échec copie JSON. Copiez manuellement.");
-                        });
-                } else {
-                    console.warn("COPY_FALLBACK: navigator.clipboard non disponible.");
-                    fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié (fallback) !", "Échec copie JSON. Copiez manuellement.");
-                }
+                fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié !", "Échec copie JSON. Copiez manuellement.");
             });
         }
 
@@ -1210,11 +1249,10 @@ Voici le contenu de mon cours :
             } else if (githubRepoLink) {
                 githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}`; 
             }
-
-            showWelcomeScreen(); 
+            
             loadUserCoursesFromLocalStorage(); 
-            await loadCoursesFromGitHub(); 
-            populateCourseList(); 
+            await loadCoursesFromGitHub();     
+            showWelcomeScreen(); 
         });
     </script>
 </body>
