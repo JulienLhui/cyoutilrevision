@@ -29,14 +29,14 @@
         .feedback-incorrect { background-color: #fee2e2; color: #991b1b; }
         .hidden { display: none; }
         .question-counter { font-size: 0.9em; color: #6b7280; margin-bottom: 1rem; text-align: center; }
-        #rawCourseContentInput, #generatedJsonOutputTextarea, #githubInstructionsContent, #manualGeminiPromptTextarea { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
-        #rawCourseContentInput, #generatedJsonOutputTextarea { min-height: 150px; }
+        #generatedJsonOutputTextarea, #githubInstructionsContent, #manualGeminiPromptTextarea { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
+        #generatedJsonOutputTextarea { min-height: 150px; } /* Specific to the main JSON input */
         .copy-feedback { font-size: 0.8rem; color: #4b5563; margin-left: 8px; }
         .course-button-container { display: inline-flex; align-items: center; margin-right: 8px; margin-bottom: 8px; }
         .delete-course-btn { background-color: transparent; border: none; color: #ef4444; font-size: 1.2em; font-weight: bold; margin-left: 5px; cursor: pointer; padding: 0 5px; line-height: 1; }
         .delete-course-btn:hover { color: #dc2626; }
         .course-section-title { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; margin-top: 1rem; text-align: left; }
-        #loadingMessage, #noGitHubCoursesMessage, #geminiLoadingMessage { text-align: center; padding: 10px; font-style: italic; color: #4b5563; }
+        #loadingMessage, #noGitHubCoursesMessage { text-align: center; padding: 10px; font-style: italic; color: #4b5563; }
         .io-section { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
         .io-section h3 { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; }
         #importFile { display: none; }
@@ -122,40 +122,19 @@
                 <input type="text" id="newCourseName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: Mon Cours d'Histoire">
             </div>
             
-            <div class="mb-4 p-4 border border-dashed border-gray-300 rounded-md">
-                <h4 class="text-md font-semibold text-gray-700 mb-2">Option 1: Générer avec l'API Gemini</h4>
-                <div class="mb-3">
-                    <label for="userGeminiApiKeyInput" class="block text-sm font-medium text-gray-700 mb-1">Votre Clé API Google Gemini (requise pour cette option) :</label>
-                    <input type="password" id="userGeminiApiKeyInput" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez votre clé API ici">
-                </div>
-                <div class="mb-3">
-                    <label for="courseFileInput" class="block text-sm font-medium text-gray-700 mb-1">Téléverser un fichier .txt avec le contenu du cours (optionnel) :</label>
-                    <input type="file" id="courseFileInput" accept=".txt" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
-                    <p class="text-xs text-gray-500 mt-1">Pour les .docx ou .pdf, veuillez copier-coller le texte dans la zone ci-dessous.</p>
-                </div>
-                <div class="mb-3">
-                    <label for="rawCourseContentInput" class="block text-sm font-medium text-gray-700 mb-1">Ou collez le contenu brut de votre cours ici :</label>
-                    <textarea id="rawCourseContentInput" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le texte de votre cours..."></textarea>
-                </div>
-                <div class="text-center">
-                    <button id="generateWithGeminiBtn" class="btn bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md">✨ Générer Flashcards & QCM avec Gemini</button>
-                    <div id="geminiLoadingMessage" class="hidden mt-2"><div class="spinner"></div>Traitement par Gemini en cours...</div>
-                </div>
+            <div class="mb-2">
+                 <button id="showManualPromptBtn" class="text-sm text-blue-600 hover:underline">Afficher/Copier le prompt pour génération manuelle avec un LLM</button>
+            </div>
+            <div id="manualPromptContainer" class="manual-prompt-container hidden mb-4">
+                <p class="text-xs text-gray-600 mb-1">Utilisez ce prompt avec un outil comme Gemini si vous souhaitez générer le JSON vous-même :</p>
+                <textarea id="manualGeminiPromptTextarea" rows="5" readonly class="w-full text-xs"></textarea>
+                <button id="copyManualPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-1 text-xs">Copier ce Prompt</button>
+                <span id="copyManualPromptFeedback" class="copy-feedback hidden"></span>
             </div>
 
-            <div class="mb-6 p-4 border border-dashed border-gray-300 rounded-md">
-                <h4 class="text-md font-semibold text-gray-700 mb-2">Option 2: Fournir le JSON manuellement</h4>
-                <div class="mb-2">
-                     <button id="showManualPromptBtn" class="text-sm text-blue-600 hover:underline">Afficher/Copier le prompt pour génération manuelle</button>
-                </div>
-                <div id="manualPromptContainer" class="manual-prompt-container hidden">
-                    <p class="text-xs text-gray-600 mb-1">Utilisez ce prompt avec un outil comme Gemini si vous souhaitez générer le JSON vous-même :</p>
-                    <textarea id="manualGeminiPromptTextarea" rows="5" readonly class="w-full text-xs"></textarea>
-                    <button id="copyManualPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-1 text-xs">Copier ce Prompt</button>
-                    <span id="copyManualPromptFeedback" class="copy-feedback hidden"></span>
-                </div>
-                <label for="generatedJsonOutputTextarea" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Collez ici le JSON du cours (généré par l'Option 1 ou manuellement) :</label>
-                <textarea id="generatedJsonOutputTextarea" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Le JSON généré ou préparé manuellement apparaîtra ici..."></textarea>
+            <div class="mb-6">
+                <label for="generatedJsonOutputTextarea" class="block text-sm font-medium text-gray-700 mb-1">Collez ici le JSON du cours (préparé manuellement ou généré par un LLM externe) :</label>
+                <textarea id="generatedJsonOutputTextarea" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
             </div>
             
             <div class="mb-4">
@@ -202,25 +181,11 @@
                 </div>
             </div>
             <div id="flashcardMessage" class="text-sm text-gray-500 text-center mb-4 h-6">Cliquez sur la carte pour voir la réponse.</div>
-             <div class="text-center mb-4">
-                <button id="explainAnswerBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md text-sm hidden">✨ M'en dire plus sur cette réponse</button>
-            </div>
             <div class="flex justify-center space-x-4">
                 <button id="nextFlashcardBtn" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Suivante</button>
             </div>
             <button id="backToModeSelectionFromFlashcardsBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-6 block mx-auto">Retour au choix du mode</button>
         </section>
-
-        <div id="flashcardExplanationModal" class="modal hidden">
-            <div class="modal-content">
-                <h3 class="modal-header">Explication Détaillée</h3>
-                <div id="flashcardExplanationSpinner" class="spinner hidden"></div>
-                <div id="flashcardExplanationContent" class="modal-body"></div>
-                <div class="modal-footer">
-                    <button id="closeFlashcardExplanationModalBtn" class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md">Fermer</button>
-                </div>
-            </div>
-        </div>
 
         <section id="qcmSection" class="hidden">
             <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Questionnaire à Choix Multiples</h2>
@@ -261,12 +226,7 @@
         
         const addCourseSection = document.getElementById('addCourseSection');
         const newCourseNameInput = document.getElementById('newCourseName');
-        const rawCourseContentInput = document.getElementById('rawCourseContentInput');
-        const courseFileInput = document.getElementById('courseFileInput');
-        const userGeminiApiKeyInput = document.getElementById('userGeminiApiKeyInput');
-        const generateWithGeminiBtn = document.getElementById('generateWithGeminiBtn');
-        const geminiLoadingMessage = document.getElementById('geminiLoadingMessage');
-        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea');
+        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea'); // Main JSON input
         const showManualPromptBtn = document.getElementById('showManualPromptBtn');
         const manualPromptContainer = document.getElementById('manualPromptContainer');
         const manualGeminiPromptTextarea = document.getElementById('manualGeminiPromptTextarea');
@@ -299,12 +259,6 @@
         const nextFlashcardBtn = document.getElementById('nextFlashcardBtn');
         const flashcardMessage = document.getElementById('flashcardMessage');
         const flashcardCounter = document.getElementById('flashcardCounter');
-        const explainAnswerBtn = document.getElementById('explainAnswerBtn');
-        const flashcardExplanationModal = document.getElementById('flashcardExplanationModal');
-        const flashcardExplanationContent = document.getElementById('flashcardExplanationContent');
-        const flashcardExplanationSpinner = document.getElementById('flashcardExplanationSpinner');
-        const closeFlashcardExplanationModalBtn = document.getElementById('closeFlashcardExplanationModalBtn');
-
 
         const qcmSection = document.getElementById('qcmSection');
         const qcmQuestionElement = document.getElementById('qcmQuestionElement');
@@ -336,15 +290,6 @@
 
         let selectedFileForImport = null; 
 
-        const GEMINI_PROMPT_FOR_GENERATION = `À partir du texte de cours suivant, génère une liste de cartes flash (question/réponse) et une liste de questions à choix multiples (QCM).
-Formatte la sortie comme un unique objet JSON valide avec les clés "title" (utilise le nom de cours fourni par l'utilisateur s'il y en a un, sinon déduis-le), "flashcards" (un tableau d'objets avec "question" et "answer"), et "qcm" (un tableau d'objets avec "question", "options" (tableau de 3-4 chaînes), et "correctAnswer" (une chaîne qui est une copie exacte de l'une des options)).
-Assure-toi que pour chaque QCM, la valeur de "correctAnswer" correspond EXACTEMENT à l'une des chaînes dans "options". Si une option contient un marqueur comme "[cite: X]", et que c'est la bonne réponse, "correctAnswer" doit aussi l'inclure.
-
-Voici le contenu du cours :
----
-[CONTENU_DU_COURS_ICI]
----
-`;
         const GEMINI_PROMPT_FOR_USER_MANUAL_GENERATION = `Bonjour, j'ai un cours que j'aimerais transformer en fiches de révision et QCM pour un outil d'étude.
 
 Merci de générer à partir du contenu de cours que je vais vous fournir :
@@ -494,7 +439,7 @@ Voici le contenu de mon cours :
             }
         }
         
-        function showWelcomeScreen() { 
+        function showWelcomeScreen() { /* ... (inchangée) ... */ 
             mainTitle.textContent = "Mon Outil de Révision";
             welcomeSection.classList.remove('hidden');
             addCourseSection.classList.add('hidden');
@@ -517,15 +462,13 @@ Voici le contenu de mon cours :
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
             
-            rawCourseContentInput.value = '';
-            generatedJsonOutputTextarea.value = '';
             newCourseNameInput.value = '';
-            userGeminiApiKeyInput.value = ''; // Vider le champ API Key
+            generatedJsonOutputTextarea.value = ''; // C'est ici que l'utilisateur colle son JSON
             adminPasswordInput.value = ''; 
             addCourseFeedback.classList.add('hidden');
             githubInstructionsDiv.classList.add('hidden');
-            manualPromptContainer.classList.add('hidden'); // Cacher le prompt manuel par défaut
-            manualGeminiPromptTextarea.value = GEMINI_PROMPT_FOR_USER_MANUAL_GENERATION; // Pré-remplir le prompt manuel
+            manualPromptContainer.classList.add('hidden'); 
+            manualGeminiPromptTextarea.value = GEMINI_PROMPT_FOR_USER_MANUAL_GENERATION;
             copyManualPromptFeedback.classList.add('hidden');
 
              if(githubRepoLink) { 
@@ -643,7 +586,7 @@ Voici le contenu de mon cours :
         }
         function displayFlashcard() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
-            explainAnswerBtn.classList.add('hidden'); // Cacher par défaut
+            // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards) { 
                 flashcardQuestion.textContent = "Erreur : Données de flashcards non trouvées pour ce cours.";
                 flashcardElement.classList.add('hidden');
@@ -670,28 +613,28 @@ Voici le contenu de mon cours :
             flashcardElement.classList.remove('is-flipped');
             flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
             flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${courseFlashcards.length}`;
-            if (flashcardElement.classList.contains('is-flipped')) {
-                explainAnswerBtn.classList.remove('hidden');
-            }
+            // if (flashcardElement.classList.contains('is-flipped')) {
+            //     explainAnswerBtn.classList.remove('hidden'); // Le bouton d'explication est retiré
+            // }
         }
-        function flipFlashcard() { /* ... (modifiée pour afficher/cacher le bouton d'explication) ... */ 
+        function flipFlashcard() { /* ... (modifiée pour ne plus gérer le bouton d'explication) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards || combinedCourses[currentCourseKey].flashcards.length === 0) return;
             flashcardElement.classList.toggle('is-flipped');
              if (flashcardElement.classList.contains('is-flipped')) {
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la question.";
-                explainAnswerBtn.classList.remove('hidden');
+                // explainAnswerBtn.classList.remove('hidden'); // Le bouton d'explication est retiré
             } else {
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
-                explainAnswerBtn.classList.add('hidden');
+                // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             }
         }
-        function nextFlashcard() { /* ... (modifiée pour cacher le bouton d'explication) ... */ 
+        function nextFlashcard() { /* ... (modifiée pour ne plus gérer le bouton d'explication) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseFlashcards = combinedCourses[currentCourseKey].flashcards;
             if (!courseFlashcards || courseFlashcards.length === 0) return;
             currentFlashcardIndex = (currentFlashcardIndex + 1) % courseFlashcards.length;
-            explainAnswerBtn.classList.add('hidden'); // Cacher au changement de carte
+            // explainAnswerBtn.classList.add('hidden'); // Le bouton d'explication est retiré
             displayFlashcard();
         }
         function displayQcm() { /* ... (inchangée) ... */ 
@@ -758,7 +701,7 @@ Voici le contenu de mon cours :
             selectedQcmOption = null; 
             submitQcmBtn.disabled = true; 
         }
-        function submitQcm() { 
+        function submitQcm() { /* ... (inchangée) ... */ 
             if (selectedQcmOption === null) {
                 qcmFeedback.textContent = "Veuillez sélectionner une réponse.";
                 qcmFeedback.className = 'feedback-message feedback-incorrect';
@@ -794,7 +737,7 @@ Voici le contenu de mon cours :
             submitQcmBtn.classList.add('hidden'); 
             nextQcmBtn.classList.remove('hidden'); 
         }
-        function nextQcm() { 
+        function nextQcm() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseQCMs = combinedCourses[currentCourseKey].qcm;
             if (!courseQCMs || courseQCMs.length === 0) return;
@@ -810,111 +753,9 @@ Voici le contenu de mon cours :
             });
         }
         
-        // --- Fonctions Gemini API ---
-        // const GEMINI_API_KEY = ""; // Sera injectée par l'environnement Canvas
-        
-        async function callGeminiApi(promptText, apiKey) {
-            const GEMINI_API_URL_GENERATE_CONTENT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
-            const payload = {
-                contents: [{ role: "user", parts: [{ text: promptText }] }],
-            };
-            const response = await fetch(GEMINI_API_URL_GENERATE_CONTENT, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            });
-            if (!response.ok) {
-                const errorBody = await response.text();
-                console.error("GEMINI_API_ERROR: HTTP Error", response.status, errorBody);
-                throw new Error(`Erreur API Gemini (${response.status}): ${errorBody}`);
-            }
-            return response.json();
-        }
-
-
-        async function callGeminiForCourseGeneration(rawText, courseTitle, apiKey) {
-            geminiLoadingMessage.classList.remove('hidden');
-            generatedJsonOutputTextarea.value = '';
-            addCourseFeedback.classList.add('hidden');
-
-            let prompt = GEMINI_PROMPT_FOR_GENERATION.replace("[CONTENU_DU_COURS_ICI]", rawText);
-            if (courseTitle) {
-                prompt = prompt.replace("déduis-le", `utilise le titre suivant: "${courseTitle}"`);
-            }
-            
-            try {
-                const result = await callGeminiApi(prompt, apiKey);
-                console.log("GEMINI_API_RESPONSE (Course Generation):", result);
-
-                if (result.candidates && result.candidates.length > 0 &&
-                    result.candidates[0].content && result.candidates[0].content.parts &&
-                    result.candidates[0].content.parts.length > 0) {
-                    
-                    let generatedText = result.candidates[0].content.parts[0].text;
-                    const jsonMatch = generatedText.match(/```json\s*([\s\S]*?)\s*```/);
-                    if (jsonMatch && jsonMatch[1]) {
-                        generatedText = jsonMatch[1];
-                    }
-
-                    try {
-                        JSON.parse(generatedText); 
-                        generatedJsonOutputTextarea.value = generatedText;
-                        addCourseFeedback.textContent = "Contenu JSON généré par Gemini. Vérifiez et sauvegardez.";
-                        addCourseFeedback.className = 'feedback-message feedback-correct';
-                    } catch (e) {
-                        console.error("GEMINI_JSON_PARSE_ERROR: Le texte généré n'est pas un JSON valide.", e, "Texte reçu:", generatedText);
-                        generatedJsonOutputTextarea.value = "Erreur: Gemini n'a pas retourné un JSON valide.\n\nTexte reçu:\n" + generatedText;
-                        addCourseFeedback.textContent = "Erreur: Gemini n'a pas retourné un JSON valide. Vérifiez le texte ci-dessus.";
-                        addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                    }
-                } else {
-                    console.error("GEMINI_API_ERROR: Réponse inattendue de l'API", result);
-                    addCourseFeedback.textContent = "Réponse inattendue de l'API Gemini.";
-                    addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                }
-            } catch (error) {
-                console.error("GEMINI_API_ERROR: Erreur de fetch", error);
-                addCourseFeedback.textContent = error.message || "Erreur de communication avec l'API Gemini.";
-                addCourseFeedback.className = 'feedback-message feedback-incorrect';
-            } finally {
-                addCourseFeedback.classList.remove('hidden');
-                geminiLoadingMessage.classList.add('hidden');
-            }
-        }
-        
-        async function callGeminiForExplanation(question, answer) {
-            flashcardExplanationSpinner.classList.remove('hidden');
-            flashcardExplanationContent.textContent = '';
-            flashcardExplanationModal.classList.remove('hidden');
-            
-            const userApiKey = prompt("Veuillez entrer votre clé API Google Gemini pour obtenir une explication :");
-            if (!userApiKey) {
-                flashcardExplanationContent.textContent = "Clé API non fournie. Impossible d'obtenir une explication.";
-                flashcardExplanationSpinner.classList.add('hidden');
-                return;
-            }
-
-            const promptText = `Explique plus en détail et de manière pédagogique la réponse suivante : "${answer}" à la question : "${question}". Fournis des exemples si pertinent.`;
-            
-            try {
-                const result = await callGeminiApi(promptText, userApiKey);
-                if (result.candidates && result.candidates[0].content.parts[0].text) {
-                    flashcardExplanationContent.textContent = result.candidates[0].content.parts[0].text;
-                } else {
-                    flashcardExplanationContent.textContent = "Désolé, je n'ai pas pu obtenir d'explication pour le moment.";
-                }
-            } catch (error) {
-                console.error("GEMINI_EXPLAIN_ERROR:", error);
-                flashcardExplanationContent.textContent = "Une erreur est survenue lors de la demande d'explication.";
-            } finally {
-                flashcardExplanationSpinner.classList.add('hidden');
-            }
-        }
-
-
-        function saveNewCourse() { /* ... (inchangée) ... */ 
+        function saveNewCourse() { 
             const courseName = newCourseNameInput.value.trim();
-            const courseDataJSON = generatedJsonOutputTextarea.value.trim(); 
+            const courseDataJSON = generatedJsonOutputTextarea.value.trim(); // JSON est maintenant collé par l'utilisateur
             const adminPass = adminPasswordInput.value; 
 
             addCourseFeedback.classList.add('hidden');
@@ -926,8 +767,8 @@ Voici le contenu de mon cours :
                 addCourseFeedback.classList.remove('hidden');
                 return;
             }
-            if (!courseDataJSON) {
-                addCourseFeedback.textContent = "Veuillez d'abord générer le contenu du cours avec Gemini ou coller un JSON valide.";
+            if (!courseDataJSON) { // Vérifier si le JSON a été collé
+                addCourseFeedback.textContent = "Veuillez coller les données JSON de votre cours.";
                 addCourseFeedback.className = 'feedback-message feedback-incorrect';
                 addCourseFeedback.classList.remove('hidden');
                 return;
@@ -937,7 +778,7 @@ Voici le contenu de mon cours :
             try {
                 newCourseContent = JSON.parse(courseDataJSON);
             } catch (error) {
-                addCourseFeedback.textContent = "Erreur : Le format JSON dans la zone de texte est invalide.";
+                addCourseFeedback.textContent = "Erreur : Le format JSON est invalide.";
                 addCourseFeedback.className = 'feedback-message feedback-incorrect';
                 addCourseFeedback.classList.remove('hidden');
                 return;
@@ -993,7 +834,6 @@ Voici le contenu de mon cours :
             }
 
             newCourseNameInput.value = ''; 
-            rawCourseContentInput.value = ''; 
             generatedJsonOutputTextarea.value = ''; 
             adminPasswordInput.value = ''; 
 
@@ -1211,42 +1051,6 @@ Voici le contenu de mon cours :
         saveCourseBtn.addEventListener('click', saveNewCourse);
         backToWelcomeFromAddBtn.addEventListener('click', showWelcomeScreen);
         
-        generateWithGeminiBtn.addEventListener('click', () => {
-            const rawText = rawCourseContentInput.value;
-            const courseTitle = newCourseNameInput.value.trim();
-            const apiKey = userGeminiApiKeyInput.value.trim();
-
-            if (!apiKey) {
-                addCourseFeedback.textContent = "Veuillez entrer votre clé API Google Gemini pour utiliser cette fonctionnalité.";
-                addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                addCourseFeedback.classList.remove('hidden');
-                return;
-            }
-            if (!rawText.trim() && (!courseFileInput.files || courseFileInput.files.length === 0)) {
-                addCourseFeedback.textContent = "Veuillez coller le contenu de votre cours ou sélectionner un fichier .txt.";
-                addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                addCourseFeedback.classList.remove('hidden');
-                return;
-            }
-
-            if (courseFileInput.files && courseFileInput.files.length > 0) {
-                const file = courseFileInput.files[0];
-                if (file.type === "text/plain") {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        callGeminiForCourseGeneration(e.target.result, courseTitle, apiKey);
-                    };
-                    reader.readAsText(file);
-                } else {
-                    addCourseFeedback.textContent = "Type de fichier non supporté pour la génération automatique. Veuillez utiliser un fichier .txt ou coller le texte.";
-                    addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                    addCourseFeedback.classList.remove('hidden');
-                }
-            } else {
-                 callGeminiForCourseGeneration(rawText, courseTitle, apiKey);
-            }
-        });
-        
         showManualPromptBtn.addEventListener('click', () => {
             manualPromptContainer.classList.toggle('hidden');
             if (!manualPromptContainer.classList.contains('hidden')) {
@@ -1258,21 +1062,6 @@ Voici le contenu de mon cours :
             fallbackCopyTextToClipboard(manualGeminiPromptTextarea.value, copyManualPromptFeedback, "Prompt copié !", "Échec copie. Copiez manuellement.");
         });
         
-        explainAnswerBtn.addEventListener('click', () => {
-            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
-            if (currentCourseKey && combinedCourses[currentCourseKey] && combinedCourses[currentCourseKey].flashcards.length > 0) {
-                const currentCard = combinedCourses[currentCourseKey].flashcards[currentFlashcardIndex];
-                // Demander la clé API pour cette fonctionnalité aussi
-                const userApiKey = prompt("Veuillez entrer votre clé API Google Gemini pour obtenir une explication (optionnel) :");
-                 if (userApiKey === null) return; // L'utilisateur a annulé
-                callGeminiForExplanation(currentCard.question, currentCard.answer, userApiKey || ""); // Passer la clé ou une chaîne vide
-            }
-        });
-        closeFlashcardExplanationModalBtn.addEventListener('click', () => {
-            flashcardExplanationModal.classList.add('hidden');
-        });
-
-
         if(copyGithubJsonBtn) { 
             copyGithubJsonBtn.addEventListener('click', () => {
                 const textToCopy = githubInstructionsContentElement.textContent;
