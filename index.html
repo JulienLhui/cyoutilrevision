@@ -41,8 +41,8 @@
         .io-section h3 { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; }
         #importFile { display: none; }
         .import-label-btn { cursor: pointer; }
-        #githubInstructions { margin-top: 1rem; padding: 1rem; background-color: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; }
-        #githubInstructions h4 { font-weight: 600; color: #4338ca; margin-bottom: 0.5rem; }
+        /* #githubInstructions { margin-top: 1rem; padding: 1rem; background-color: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; } */
+        /* #githubInstructions h4 { font-weight: 600; color: #4338ca; margin-bottom: 0.5rem; } */
         #adminGithubUploadOptions { margin-top: 10px; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 6px; background-color: #f8fafc; }
         .modal { position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; align-items: center; justify-content: center; z-index: 50; padding: 1rem; }
         .modal-content { background-color: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); width: 100%; max-width: 32rem; max-height: 90vh; display: flex; flex-direction: column; }
@@ -143,25 +143,11 @@
                 <textarea id="generatedJsonOutputTextarea" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
             </div>
             
-            <div class="mb-4">
+            <!-- <div class="mb-4">
                 <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe administrateur (optionnel, pour aide à l'ajout manuel sur GitHub) :</label>
                 <input type="password" id="adminPassword" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez 'JuLhui' pour instructions">
-            </div>
+            </div> -->
             <div id="addCourseFeedback" class="feedback-message hidden mb-4"></div>
-            <div id="githubInstructions" class="hidden">
-                <h4>Instructions pour ajouter ce cours à GitHub (pour les cours partagés) :</h4>
-                <p class="text-sm mb-2">Le cours a été sauvegardé localement. Pour le partager avec tout le monde via GitHub :</p>
-                <ol class="list-decimal list-inside text-sm space-y-1">
-                    <li>Nom du fichier suggéré : <strong id="suggestedFileName"></strong></li>
-                    <li>Allez sur votre dépôt GitHub : <a :href="'https://github.com/' + GITHUB_USER_REPO + '/tree/' + GITHUB_BRANCH + '/' + GITHUB_COURSES_DIRECTORY_PATH" target="_blank" class="text-blue-600 hover:underline" id="githubRepoLink">Lien vers le dossier des cours</a></li>
-                    <li>Cliquez sur "Add file" > "Create new file".</li>
-                    <li>Collez le nom de fichier suggéré ci-dessus.</li>
-                    <li>Collez le contenu JSON ci-dessous dans la zone d'édition du fichier :</li>
-                </ol>
-                <pre id="githubInstructionsContent" class="mt-2"></pre>
-                <button id="copyGithubJsonBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-2 text-xs">Copier le JSON pour GitHub</button>
-                <span id="copyGithubJsonFeedback" class="copy-feedback hidden"></span>
-            </div>
             <div class="flex justify-center space-x-4 mt-6">
                 <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours personnel</button>
                 <button id="backToWelcomeFromAddBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Retour à l'accueil</button>
@@ -217,7 +203,7 @@
         let currentFlashcardIndex = 0;
         let currentQcmIndex = 0;
         let selectedQcmOption = null;
-        const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; 
+        // const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; // Retiré car la fonctionnalité associée est retirée
 
         // !!! VÉRIFIEZ BIEN CES CONSTANTES !!!
         const GITHUB_USER_REPO = 'JulienLhui/cyoutilrevision'; 
@@ -241,16 +227,16 @@
         const copyManualPromptBtn = document.getElementById('copyManualPromptBtn');
         const copyManualPromptFeedback = document.getElementById('copyManualPromptFeedback');
 
-        const adminPasswordInput = document.getElementById('adminPassword'); 
+        // const adminPasswordInput = document.getElementById('adminPassword'); // Retiré
         const saveCourseBtn = document.getElementById('saveCourseBtn');
         const backToWelcomeFromAddBtn = document.getElementById('backToWelcomeFromAddBtn');
         const addCourseFeedback = document.getElementById('addCourseFeedback');
-        const githubInstructionsDiv = document.getElementById('githubInstructions');
-        const suggestedFileNameElement = document.getElementById('suggestedFileName');
-        const githubInstructionsContentElement = document.getElementById('githubInstructionsContent');
-        const copyGithubJsonBtn = document.getElementById('copyGithubJsonBtn');
-        const copyGithubJsonFeedback = document.getElementById('copyGithubJsonFeedback');
-        const githubRepoLink = document.getElementById('githubRepoLink');
+        // const githubInstructionsDiv = document.getElementById('githubInstructions'); // Retiré
+        // const suggestedFileNameElement = document.getElementById('suggestedFileName'); // Retiré
+        // const githubInstructionsContentElement = document.getElementById('githubInstructionsContent'); // Retiré
+        // const copyGithubJsonBtn = document.getElementById('copyGithubJsonBtn'); // Retiré
+        // const copyGithubJsonFeedback = document.getElementById('copyGithubJsonFeedback'); // Retiré
+        // const githubRepoLink = document.getElementById('githubRepoLink'); // Retiré
 
         const loadingMessage = document.getElementById('loadingMessage');
         const noGitHubCoursesMessage = document.getElementById('noGitHubCoursesMessage');
@@ -470,16 +456,16 @@ Voici le contenu de mon cours :
             
             newCourseNameInput.value = '';
             generatedJsonOutputTextarea.value = ''; 
-            adminPasswordInput.value = ''; 
+            // adminPasswordInput.value = ''; // Retiré
             addCourseFeedback.classList.add('hidden');
-            githubInstructionsDiv.classList.add('hidden');
+            // githubInstructionsDiv.classList.add('hidden'); // Retiré
             manualPromptContainer.classList.add('hidden'); 
             manualGeminiPromptTextarea.value = GEMINI_PROMPT_FOR_USER_MANUAL_GENERATION;
             copyManualPromptFeedback.classList.add('hidden');
 
-             if(githubRepoLink) { 
-                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
-            }
+            //  if(githubRepoLink) { // Retiré car githubInstructionsDiv est retiré
+            //     githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
+            // }
         }
         function populateCourseList() { 
             githubCourseListContainer.innerHTML = ''; 
@@ -755,10 +741,10 @@ Voici le contenu de mon cours :
         function saveNewCourse() { 
             const courseName = newCourseNameInput.value.trim();
             const courseDataJSON = generatedJsonOutputTextarea.value.trim(); 
-            const adminPass = adminPasswordInput.value; 
+            // const adminPass = adminPasswordInput.value; // Retiré de la logique principale de sauvegarde
 
             addCourseFeedback.classList.add('hidden');
-            githubInstructionsDiv.classList.add('hidden');
+            // githubInstructionsDiv.classList.add('hidden'); // Retiré
 
             if (!courseName) {
                 addCourseFeedback.textContent = "Veuillez donner un nom à votre cours.";
@@ -825,22 +811,14 @@ Voici le contenu de mon cours :
             addCourseFeedback.className = 'feedback-message feedback-correct';
             addCourseFeedback.classList.remove('hidden');
             
-            if (adminPass === ADMIN_PASSWORD_MANUAL_GITHUB_HELPER) {
-                const suggestedFileName = courseName.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_.-]/g, '') + '.json';
-                suggestedFileNameElement.textContent = suggestedFileName;
-                githubInstructionsContentElement.textContent = JSON.stringify(userCoursesData[courseKey], null, 2);
-                githubInstructionsDiv.classList.remove('hidden');
-            }
+            // La logique pour afficher les instructions GitHub si adminPass est correct est retirée ici
+            // car le champ de mot de passe a été retiré de l'interface pour cette action.
 
             newCourseNameInput.value = ''; 
             generatedJsonOutputTextarea.value = ''; 
-            adminPasswordInput.value = ''; 
+            // adminPasswordInput.value = ''; // Retiré
 
-            if (!githubInstructionsDiv.classList.contains('hidden')) {
-                 setTimeout(() => { addCourseFeedback.classList.add('hidden'); }, 5000); 
-            } else {
-                setTimeout(() => { showWelcomeScreen(); }, 2000);
-            }
+            setTimeout(() => { showWelcomeScreen(); }, 2000);
         }
         function downloadJSON(data, filename) { 
             if (!filename.endsWith('.json')) {
@@ -1035,7 +1013,7 @@ Voici le contenu de mon cours :
                 return true;
             }
         }
-        async function uploadCourseToGitHub(fileName, jsonContentString, pat, commitMessage) { /* ... (inchangée) ... */ 
+        async function uploadCourseToGitHub(fileName, jsonContentString, pat, commitMessage) { 
             const apiUrl = `https://api.github.com/repos/${GITHUB_USER_REPO}/contents/${GITHUB_COURSES_DIRECTORY_PATH}/${fileName}`;
             console.log(`GITHUB_UPLOAD: Tentative de téléversement vers ${apiUrl}`);
             
@@ -1117,12 +1095,12 @@ Voici le contenu de mon cours :
             fallbackCopyTextToClipboard(manualGeminiPromptTextarea.value, copyManualPromptFeedback, "Prompt copié !", "Échec copie. Copiez manuellement.");
         });
         
-        if(copyGithubJsonBtn) { 
-            copyGithubJsonBtn.addEventListener('click', () => {
-                const textToCopy = githubInstructionsContentElement.textContent;
-                fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié !", "Échec copie JSON. Copiez manuellement.");
-            });
-        }
+        // if(copyGithubJsonBtn) { // Cette condition n'est plus nécessaire car le bouton est retiré
+        //     copyGithubJsonBtn.addEventListener('click', () => {
+        //         const textToCopy = githubInstructionsContentElement.textContent;
+        //         fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié !", "Échec copie JSON. Copiez manuellement.");
+        //     });
+        // }
 
 
         function fallbackCopyTextToClipboard(text, feedbackElement, successMessage, errorMessage) {
@@ -1244,11 +1222,11 @@ Voici le contenu de mon cours :
 
         // --- Initialisation ---
         document.addEventListener('DOMContentLoaded', async () => {
-            if(githubRepoLink && GITHUB_USER_REPO && GITHUB_BRANCH && GITHUB_COURSES_DIRECTORY_PATH) {
-                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
-            } else if (githubRepoLink) {
-                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}`; 
-            }
+            // if(githubRepoLink && GITHUB_USER_REPO && GITHUB_BRANCH && GITHUB_COURSES_DIRECTORY_PATH) { // Retiré car githubInstructionsDiv est retiré
+            //     githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
+            // } else if (githubRepoLink) {
+            //     githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}`; 
+            // }
             
             loadUserCoursesFromLocalStorage(); 
             await loadCoursesFromGitHub();     
