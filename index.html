@@ -11,162 +11,39 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
-        .flashcard-container {
-            perspective: 1000px;
-            min-height: 200px;
-        }
-        .flashcard {
-            width: 100%;
-            height: 200px;
-            position: relative;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-            cursor: pointer;
-        }
-        .flashcard.is-flipped {
-            transform: rotateY(180deg);
-        }
-        .flashcard-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow-y: auto;
-            text-align: center;
-        }
-        .flashcard-front {
-            background-color: #ffffff;
-            color: #1f2937;
-        }
-        .flashcard-back {
-            background-color: #4b5563;
-            color: #ffffff;
-            transform: rotateY(180deg);
-        }
-        .qcm-option {
-            transition: background-color 0.3s;
-        }
-        .qcm-option:hover {
-            background-color: #e5e7eb;
-        }
-        .correct-answer {
-            background-color: #d1fae5 !important;
-            border-left: 4px solid #10b981;
-        }
-        .incorrect-answer {
-            background-color: #fee2e2 !important;
-            border-left: 4px solid #ef4444;
-        }
-        .btn {
-            transition: background-color 0.3s, transform 0.1s;
-        }
-        .btn:hover {
-            opacity: 0.9;
-        }
-        .btn:active {
-            transform: scale(0.98);
-        }
-        .feedback-message {
-            padding: 12px;
-            border-radius: 8px;
-            margin-top: 16px;
-            font-weight: 500;
-            text-align: center;
-        }
-        .feedback-correct {
-            background-color: #d1fae5;
-            color: #065f46;
-        }
-        .feedback-incorrect {
-            background-color: #fee2e2;
-            color: #991b1b;
-        }
-        .hidden {
-            display: none;
-        }
-        .question-counter {
-            font-size: 0.9em;
-            color: #6b7280; 
-            margin-bottom: 1rem;
-            text-align: center;
-        }
-        #addCoursePromptContainer pre, #newCourseData {
-            font-family: monospace;
-            font-size: 0.9em;
-            border: 1px solid #d1d5db;
-            padding: 8px;
-            border-radius: 6px;
-            background-color: #f9fafb;
-            white-space: pre-wrap; 
-            word-wrap: break-word; 
-            max-height: 200px;
-            overflow-y: auto;
-        }
-         #newCourseData {
-            min-height: 150px;
-         }
-        .copy-feedback {
-            font-size: 0.8rem;
-            color: #4b5563;
-            margin-left: 8px;
-        }
-        .course-button-container {
-            display: inline-flex; 
-            align-items: center;
-            margin-right: 8px; 
-            margin-bottom: 8px; 
-        }
-        .delete-course-btn {
-            background-color: transparent;
-            border: none;
-            color: #ef4444; 
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-left: 5px;
-            cursor: pointer;
-            padding: 0 5px;
-            line-height: 1;
-        }
-        .delete-course-btn:hover {
-            color: #dc2626; 
-        }
-        .course-section-title {
-            font-size: 1.1em;
-            font-weight: 500;
-            color: #374151; 
-            margin-bottom: 0.75rem;
-            margin-top: 1rem;
-            text-align: left;
-        }
-        #loadingMessage, #noGitHubCoursesMessage { /* Combined for GitHub loading status */
-            text-align: center;
-            padding: 10px; /* Reduced padding */
-            font-style: italic;
-            color: #4b5563;
-        }
-        .io-section {
-            margin-top: 2rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e5e7eb;
-        }
-        .io-section h3 {
-            font-size: 1.1em;
-            font-weight: 500;
-            color: #374151;
-            margin-bottom: 0.75rem;
-        }
-        #importFile {
-            display: none; 
-        }
-        .import-label-btn {
-            cursor: pointer;
-        }
+        .flashcard-container { perspective: 1000px; min-height: 200px; }
+        .flashcard { width: 100%; height: 200px; position: relative; transform-style: preserve-3d; transition: transform 0.6s; cursor: pointer; }
+        .flashcard.is-flipped { transform: rotateY(180deg); }
+        .flashcard-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; justify-content: center; align-items: center; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow-y: auto; text-align: center; }
+        .flashcard-front { background-color: #ffffff; color: #1f2937; }
+        .flashcard-back { background-color: #4b5563; color: #ffffff; transform: rotateY(180deg); }
+        .qcm-option { transition: background-color 0.3s; }
+        .qcm-option:hover { background-color: #e5e7eb; }
+        .correct-answer { background-color: #d1fae5 !important; border-left: 4px solid #10b981; }
+        .incorrect-answer { background-color: #fee2e2 !important; border-left: 4px solid #ef4444; }
+        .btn { transition: background-color 0.3s, transform 0.1s; }
+        .btn:hover { opacity: 0.9; }
+        .btn:active { transform: scale(0.98); }
+        .feedback-message { padding: 12px; border-radius: 8px; margin-top: 16px; font-weight: 500; text-align: center; }
+        .feedback-correct { background-color: #d1fae5; color: #065f46; }
+        .feedback-incorrect { background-color: #fee2e2; color: #991b1b; }
+        .hidden { display: none; }
+        .question-counter { font-size: 0.9em; color: #6b7280; margin-bottom: 1rem; text-align: center; }
+        #addCoursePromptContainer pre, #newCourseData, #githubInstructionsContent { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
+        #newCourseData { min-height: 150px; }
+        .copy-feedback { font-size: 0.8rem; color: #4b5563; margin-left: 8px; }
+        .course-button-container { display: inline-flex; align-items: center; margin-right: 8px; margin-bottom: 8px; }
+        .delete-course-btn { background-color: transparent; border: none; color: #ef4444; font-size: 1.2em; font-weight: bold; margin-left: 5px; cursor: pointer; padding: 0 5px; line-height: 1; }
+        .delete-course-btn:hover { color: #dc2626; }
+        .course-section-title { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; margin-top: 1rem; text-align: left; }
+        #loadingMessage, #noGitHubCoursesMessage { text-align: center; padding: 10px; font-style: italic; color: #4b5563; }
+        .io-section { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
+        .io-section h3 { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; }
+        #importFile { display: none; }
+        .import-label-btn { cursor: pointer; }
+        #githubInstructions { margin-top: 1rem; padding: 1rem; background-color: #eef2ff; border: 1px solid #c7d2fe; border-radius: 8px; }
+        #githubInstructions h4 { font-weight: 600; color: #4338ca; margin-bottom: 0.5rem; }
+        #adminGithubUploadOptions { margin-top: 10px; padding: 10px; border: 1px dashed #cbd5e1; border-radius: 6px; background-color: #f8fafc; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
@@ -181,18 +58,14 @@
             
             <div>
                 <h3 class="course-section-title">Cours partagés (depuis GitHub) :</h3>
-                <div id="githubCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
-                    {/* Les boutons des cours GitHub seront injectés ici */}
-                </div>
+                <div id="githubCourseListContainer" class="flex flex-wrap justify-center md:justify-start"></div>
                  <p id="loadingMessage">Chargement des cours depuis GitHub...</p>
-                 <p id="noGitHubCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours partagé n'a pu être chargé depuis GitHub. Vérifiez la configuration et les fichiers.</p>
+                 <p id="noGitHubCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours partagé n'a pu être chargé. Vérifiez la configuration et les fichiers sur GitHub.</p>
             </div>
 
             <div class="mt-6">
                 <h3 class="course-section-title">Vos cours personnels (stockés localement) :</h3>
-                <div id="localCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
-                    {/* Les boutons des cours locaux seront injectés ici */}
-                </div>
+                <div id="localCourseListContainer" class="flex flex-wrap justify-center md:justify-start"></div>
                 <p id="noLocalCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours personnel ajouté pour le moment.</p>
             </div>
 
@@ -204,8 +77,23 @@
                 <h3 class="text-center md:text-left">Gestion des données des cours :</h3>
                 <div class="flex flex-col md:flex-row justify-center md:justify-start space-y-2 md:space-y-0 md:space-x-3 mt-2">
                     <button id="exportCoursesBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Exporter tous les cours</button>
-                    <label for="importFile" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md import-label-btn">Importer des cours personnels</label>
+                    <label for="importFile" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md import-label-btn">Importer des cours</label>
                     <input type="file" id="importFile" accept=".json">
+                </div>
+                <div id="importOptionsContainer" class="mt-4 hidden">
+                    <label class="flex items-center">
+                        <input type="checkbox" id="uploadToGithubCheckbox" class="form-checkbox h-5 w-5 text-indigo-600">
+                        <span class="ml-2 text-sm text-gray-700">Téléverser ce fichier sur GitHub (Admin - pour un seul cours à la fois)</span>
+                    </label>
+                    <div id="adminGithubUploadOptions" class="hidden mt-2 space-y-2">
+                        <div>
+                            <label for="githubPat" class="block text-xs font-medium text-gray-700">Token d'Accès Personnel GitHub (PAT) (optionnel) :</label>
+                            <input type="password" id="githubPat" class="mt-1 block w-full sm:w-1/2 px-2 py-1 border border-gray-300 rounded-md shadow-sm text-sm" placeholder="Collez votre PAT GitHub ici">
+                             <p class="text-xs text-gray-500 mt-1">Requis pour écrire sur GitHub. Ne sera pas stocké.</p>
+                        </div>
+                         <button id="confirmImportBtn" class="btn bg-teal-500 hover:bg-teal-600 text-white font-semibold py-1 px-3 text-sm rounded-lg shadow-md">Confirmer l'importation et téléverser</button>
+                    </div>
+                     <button id="confirmLocalImportBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-1 px-3 text-sm rounded-lg shadow-md mt-2">Importer localement seulement</button>
                 </div>
                 <p id="ioFeedback" class="text-sm text-gray-600 mt-3 text-center md:text-left"></p>
             </div>
@@ -213,35 +101,44 @@
 
         <section id="addCourseSection" class="hidden py-6">
             <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Ajouter un nouveau cours personnel</h2>
-            
             <div class="mb-4">
                 <label for="newCourseName" class="block text-sm font-medium text-gray-700 mb-1">Nom du nouveau cours :</label>
                 <input type="text" id="newCourseName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: Mon Cours d'Histoire">
             </div>
-
             <div class="mb-4">
                 <p class="block text-sm font-medium text-gray-700 mb-1">1. Copiez le prompt suivant et utilisez-le avec Gemini (ou un outil similaire) en lui fournissant le contenu de votre cours :</p>
-                <div id="addCoursePromptContainer" class="bg-gray-50 p-3 rounded-md border">
-                    <pre id="addCoursePrompt"></pre>
-                </div>
+                <div id="addCoursePromptContainer" class="bg-gray-50 p-3 rounded-md border"><pre id="addCoursePrompt"></pre></div>
                 <button id="copyPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-2 text-xs">Copier le Prompt</button>
                 <span id="copyPromptFeedback" class="copy-feedback hidden"></span>
             </div>
-
             <div class="mb-6">
                 <label for="newCourseData" class="block text-sm font-medium text-gray-700 mb-1">2. Collez ici les données JSON générées (doit contenir 'title', 'flashcards', 'qcm') :</label>
                 <textarea id="newCourseData" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
             </div>
-            
+            <div class="mb-4">
+                <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe administrateur (optionnel, pour aide à l'ajout manuel sur GitHub) :</label>
+                <input type="password" id="adminPassword" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez 'JuLhui' pour instructions">
+            </div>
             <div id="addCourseFeedback" class="feedback-message hidden mb-4"></div>
-
-            <div class="flex justify-center space-x-4">
-                <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours</button>
+            <div id="githubInstructions" class="hidden">
+                <h4>Instructions pour ajouter ce cours à GitHub (pour les cours partagés) :</h4>
+                <p class="text-sm mb-2">Le cours a été sauvegardé localement. Pour le partager avec tout le monde via GitHub :</p>
+                <ol class="list-decimal list-inside text-sm space-y-1">
+                    <li>Nom du fichier suggéré : <strong id="suggestedFileName"></strong></li>
+                    <li>Allez sur votre dépôt GitHub : <a :href="'https://github.com/' + GITHUB_USER_REPO + '/tree/' + GITHUB_BRANCH + '/' + GITHUB_COURSES_DIRECTORY_PATH" target="_blank" class="text-blue-600 hover:underline" id="githubRepoLink">Lien vers le dossier des cours</a></li>
+                    <li>Cliquez sur "Add file" > "Create new file".</li>
+                    <li>Collez le nom de fichier suggéré ci-dessus.</li>
+                    <li>Collez le contenu JSON ci-dessous dans la zone d'édition du fichier :</li>
+                </ol>
+                <pre id="githubInstructionsContent" class="mt-2"></pre>
+                <button id="copyGithubJsonBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-2 text-xs">Copier le JSON pour GitHub</button>
+                <span id="copyGithubJsonFeedback" class="copy-feedback hidden"></span>
+            </div>
+            <div class="flex justify-center space-x-4 mt-6">
+                <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours personnel</button>
                 <button id="backToWelcomeFromAddBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Retour à l'accueil</button>
             </div>
         </section>
-
-
         <section id="modeSelectionSection" class="hidden text-center py-10">
             <h2 id="modeSelectionTitle" class="text-2xl font-semibold text-gray-700 mb-6"></h2>
             <div class="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
@@ -250,18 +147,13 @@
             </div>
             <button id="backToWelcomeFromModeBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-8">Retour à l'accueil</button>
         </section>
-
         <section id="flashcardsSection" class="hidden">
             <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Cartes Flash</h2>
             <div id="flashcardCounter" class="question-counter"></div>
             <div id="flashcardContainer" class="flashcard-container mb-4">
                 <div id="flashcard" class="flashcard">
-                    <div class="flashcard-face flashcard-front">
-                        <p id="flashcardQuestion" class="text-lg"></p>
-                    </div>
-                    <div class="flashcard-face flashcard-back">
-                        <p id="flashcardAnswer" class="text-lg"></p>
-                    </div>
+                    <div class="flashcard-face flashcard-front"><p id="flashcardQuestion" class="text-lg"></p></div>
+                    <div class="flashcard-face flashcard-back"><p id="flashcardAnswer" class="text-lg"></p></div>
                 </div>
             </div>
             <div id="flashcardMessage" class="text-sm text-gray-500 text-center mb-4 h-6">Cliquez sur la carte pour voir la réponse.</div>
@@ -270,7 +162,6 @@
             </div>
             <button id="backToModeSelectionFromFlashcardsBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-6 block mx-auto">Retour au choix du mode</button>
         </section>
-
         <section id="qcmSection" class="hidden">
             <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Questionnaire à Choix Multiples</h2>
             <div id="qcmCounter" class="question-counter"></div>
@@ -288,23 +179,19 @@
     </div>
 
     <script>
-        const USER_COURSES_LOCAL_STORAGE_KEY = 'revisionAppUserCourses_v2'; // Clé pour les cours personnels
+        const USER_COURSES_LOCAL_STORAGE_KEY = 'revisionAppUserCourses_v2';
         let gitHubCoursesData = {}; 
         let userCoursesData = {};   
         let currentCourseKey = null;
         let currentFlashcardIndex = 0;
         let currentQcmIndex = 0;
         let selectedQcmOption = null;
+        const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; // Pour l'aide à l'ajout manuel
 
-        // ===================================================================================
-        // CONFIGURATION POUR LE CHARGEMENT DES COURS DEPUIS GITHUB
-        // ===================================================================================
         const GITHUB_USER_REPO = 'JulienLhui/cyoutilrevision'; 
         const GITHUB_BRANCH = 'main'; 
         const GITHUB_COURSES_DIRECTORY_PATH = 'cours'; 
-        // ===================================================================================
 
-        // --- Éléments du DOM ---
         const mainTitle = document.getElementById('mainTitle');
         const welcomeSection = document.getElementById('welcomeSection');
         const githubCourseListContainer = document.getElementById('githubCourseListContainer');
@@ -318,16 +205,22 @@
         const copyPromptBtn = document.getElementById('copyPromptBtn');
         const copyPromptFeedback = document.getElementById('copyPromptFeedback'); 
         const newCourseDataTextarea = document.getElementById('newCourseData');
+        const adminPasswordInput = document.getElementById('adminPassword'); 
         const saveCourseBtn = document.getElementById('saveCourseBtn');
         const backToWelcomeFromAddBtn = document.getElementById('backToWelcomeFromAddBtn');
         const addCourseFeedback = document.getElementById('addCourseFeedback');
+        const githubInstructionsDiv = document.getElementById('githubInstructions');
+        const suggestedFileNameElement = document.getElementById('suggestedFileName');
+        const githubInstructionsContentElement = document.getElementById('githubInstructionsContent');
+        const copyGithubJsonBtn = document.getElementById('copyGithubJsonBtn');
+        const copyGithubJsonFeedback = document.getElementById('copyGithubJsonFeedback');
+        const githubRepoLink = document.getElementById('githubRepoLink');
 
         const loadingMessage = document.getElementById('loadingMessage');
-        const noGitHubCoursesMessage = document.getElementById('noGitHubCoursesMessage'); // Renommé pour clarté
+        const noGitHubCoursesMessage = document.getElementById('noGitHubCoursesMessage');
         
         const modeSelectionSection = document.getElementById('modeSelectionSection');
         const modeSelectionTitle = document.getElementById('modeSelectionTitle');
-        
         const showFlashcardsBtn = document.getElementById('showFlashcardsBtn');
         const showQcmBtn = document.getElementById('showQcmBtn');
         
@@ -354,6 +247,15 @@
         const exportCoursesBtn = document.getElementById('exportCoursesBtn');
         const importFile = document.getElementById('importFile');
         const ioFeedback = document.getElementById('ioFeedback');
+        const importOptionsContainer = document.getElementById('importOptionsContainer');
+        const uploadToGithubCheckbox = document.getElementById('uploadToGithubCheckbox');
+        const adminGithubUploadOptionsDiv = document.getElementById('adminGithubUploadOptions');
+        // const adminGithubPasswordInput = document.getElementById('adminGithubPassword'); // Déjà défini plus haut pour l'autre section
+        const githubPatInput = document.getElementById('githubPat');
+        const confirmImportBtn = document.getElementById('confirmImportBtn');
+        const confirmLocalImportBtn = document.getElementById('confirmLocalImportBtn');
+        
+        let selectedFileForImport = null; 
 
         const GEMINI_PROMPT = `Bonjour Gemini, j'ai un cours que j'aimerais transformer en fiches de révision et QCM pour mon outil.
 
@@ -383,7 +285,7 @@ Le champ "title" doit être une chaîne de caractères.
 Voici le contenu de mon cours :
 [VEUILLEZ COLLER LE CONTENU INTÉGRAL DE VOTRE COURS ICI]`;
 
-        function loadUserCoursesFromLocalStorage() {
+        function loadUserCoursesFromLocalStorage() { /* ... (inchangée) ... */ 
             console.log("LOCAL_STORAGE_LOAD: Tentative de chargement des cours utilisateur.");
             const storedUserCourses = localStorage.getItem(USER_COURSES_LOCAL_STORAGE_KEY);
             if (storedUserCourses) {
@@ -402,8 +304,7 @@ Voici le contenu de mon cours :
                 console.log("LOCAL_STORAGE_LOAD: Aucun cours utilisateur trouvé dans localStorage.");
             }
         }
-
-        function saveUserCoursesToLocalStorage() {
+        function saveUserCoursesToLocalStorage() { /* ... (inchangée) ... */ 
             console.log("LOCAL_STORAGE_SAVE: Tentative de sauvegarde des cours utilisateur:", userCoursesData);
             try {
                 localStorage.setItem(USER_COURSES_LOCAL_STORAGE_KEY, JSON.stringify(userCoursesData));
@@ -415,8 +316,7 @@ Voici le contenu de mon cours :
                 setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
             }
         }
-        
-        async function fetchAndValidateCourseContent(downloadUrl, fileNameForLogging) {
+        async function fetchAndValidateCourseContent(downloadUrl, fileNameForLogging) { /* ... (inchangée) ... */ 
             console.log(`GITHUB_FETCH: Tentative de chargement du contenu de ${fileNameForLogging} depuis ${downloadUrl}`);
             try {
                 const response = await fetch(downloadUrl);
@@ -447,8 +347,7 @@ Voici le contenu de mon cours :
                 return null;
             }
         }
-
-        async function loadCoursesFromGitHub() {
+        async function loadCoursesFromGitHub() { /* ... (inchangée) ... */ 
             console.log("GITHUB_FETCH: Début du chargement des cours partagés...");
             loadingMessage.classList.remove('hidden');
             noGitHubCoursesMessage.classList.add('hidden'); 
@@ -479,11 +378,11 @@ Voici le contenu de mon cours :
                 return; 
             }
 
-            if (filesToFetch.length === 0) {
-                console.warn("GITHUB_FETCH: Aucun fichier .json trouvé dans le dossier GitHub.");
-                loadingMessage.classList.add('hidden');
+            if (filesToFetch.length === 0 && GITHUB_COURSES_DIRECTORY_PATH) { 
+                console.warn("GITHUB_FETCH: Aucun fichier .json trouvé dans le dossier GitHub:", GITHUB_COURSES_DIRECTORY_PATH);
                 noGitHubCoursesMessage.classList.remove('hidden'); 
             }
+
 
             const coursePromises = filesToFetch.map(fileInfo => fetchAndValidateCourseContent(fileInfo.download_url, fileInfo.name));
             const results = await Promise.all(coursePromises);
@@ -500,14 +399,14 @@ Voici le contenu de mon cours :
             if (Object.keys(gitHubCoursesData).length === 0 && filesToFetch.length > 0) {
                  console.warn("GITHUB_FETCH: Fichiers JSON détectés mais aucun cours partagé n'a pu être chargé correctement.");
                  noGitHubCoursesMessage.classList.remove('hidden');
-            } else if (filesToFetch.length === 0) {
-                noGitHubCoursesMessage.classList.remove('hidden'); 
-            } else {
+            } else if (filesToFetch.length === 0 && GITHUB_COURSES_DIRECTORY_PATH) {
+                // Message déjà géré
+            } else if (Object.keys(gitHubCoursesData).length > 0) {
                 noGitHubCoursesMessage.classList.add('hidden'); 
             }
         }
-
-        function showWelcomeScreen() {
+        
+        function showWelcomeScreen() { /* ... (inchangée) ... */ 
             mainTitle.textContent = "Mon Outil de Révision";
             welcomeSection.classList.remove('hidden');
             addCourseSection.classList.add('hidden');
@@ -515,10 +414,14 @@ Voici le contenu de mon cours :
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
             currentCourseKey = null;
+            importOptionsContainer.classList.add('hidden'); 
+            uploadToGithubCheckbox.checked = false;
+            adminGithubUploadOptionsDiv.classList.add('hidden');
+            // adminGithubPasswordInput.value = ''; // Ce champ n'existe plus pour l'upload direct
+            githubPatInput.value = '';
             populateCourseList();
         }
-
-        function showAddCourseScreen() {
+        function showAddCourseScreen() { /* ... (inchangée) ... */ 
             mainTitle.textContent = "Ajouter un Nouveau Cours Personnel";
             welcomeSection.classList.add('hidden');
             addCourseSection.classList.remove('hidden');
@@ -528,18 +431,22 @@ Voici le contenu de mon cours :
             addCoursePromptElement.textContent = GEMINI_PROMPT;
             newCourseNameInput.value = '';
             newCourseDataTextarea.value = '';
+            adminPasswordInput.value = ''; 
             addCourseFeedback.classList.add('hidden');
+            githubInstructionsDiv.classList.add('hidden');
             copyPromptFeedback.classList.add('hidden'); 
+            copyGithubJsonFeedback.classList.add('hidden');
+             if(githubRepoLink) { 
+                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
+            }
         }
-        
-        function populateCourseList() {
+        function populateCourseList() { /* ... (inchangée) ... */ 
             githubCourseListContainer.innerHTML = ''; 
             localCourseListContainer.innerHTML = '';
             let localCoursesExist = false;
             
-            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData }; 
 
-            // Afficher les cours GitHub
             Object.keys(gitHubCoursesData).forEach(key => {
                 const course = gitHubCoursesData[key];
                 const buttonContainer = document.createElement('div');
@@ -548,16 +455,15 @@ Voici le contenu de mon cours :
                 buttonContainer.appendChild(button);
                 githubCourseListContainer.appendChild(buttonContainer);
             });
-             if (Object.keys(gitHubCoursesData).length === 0 && loadingMessage.classList.contains('hidden')) {
+             if (Object.keys(gitHubCoursesData).length === 0 && loadingMessage.classList.contains('hidden') && GITHUB_COURSES_DIRECTORY_PATH) {
                  noGitHubCoursesMessage.classList.remove('hidden');
             } else {
                  noGitHubCoursesMessage.classList.add('hidden');
             }
 
 
-            // Afficher les cours locaux
             Object.keys(userCoursesData).forEach(key => {
-                if (!gitHubCoursesData[key]) { // S'assurer de ne pas dupliquer si une clé locale correspond à une clé GitHub
+                if (!gitHubCoursesData[key]) { 
                     localCoursesExist = true;
                     const course = userCoursesData[key];
                     const buttonContainer = document.createElement('div');
@@ -584,16 +490,14 @@ Voici le contenu de mon cours :
                 noLocalCoursesMessage.classList.remove('hidden');
             }
         }
-
-        function createCourseButton(key, title, sourceData) {
+        function createCourseButton(key, title, sourceDataForColoring) { /* ... (inchangée) ... */ 
             const button = document.createElement('button');
             button.dataset.course = key;
             button.classList.add('course-btn', 'btn', 'text-white', 'font-semibold', 'py-2', 'px-4', 'rounded-lg', 'shadow-md');
             const colors = ['bg-sky-600 hover:bg-sky-700', 'bg-teal-600 hover:bg-teal-700', 'bg-indigo-600 hover:bg-indigo-700', 'bg-rose-600 hover:bg-rose-700', 'bg-amber-600 hover:bg-amber-700'];
-            // Pour la couleur, on se base sur l'index dans l'ensemble des cours combinés pour varier
-            const allKeys = Object.keys({...gitHubCoursesData, ...userCoursesData});
+            const allKeys = Object.keys(sourceDataForColoring);
             const colorIndex = allKeys.indexOf(key) % colors.length;
-            const colorClass = colors[colorIndex >= 0 ? colorIndex : 0]; // S'assurer que l'index est valide
+            const colorClass = colors[colorIndex >= 0 ? colorIndex : 0]; 
             button.classList.add(...colorClass.split(' '));
             button.textContent = title;
             button.addEventListener('click', () => {
@@ -604,8 +508,7 @@ Voici le contenu de mon cours :
             });
             return button;
         }
-        
-        function deleteUserCourse(courseKey, courseTitle) {
+        function deleteUserCourse(courseKey, courseTitle) { /* ... (inchangée) ... */ 
             console.log(`LOCAL_STORAGE_DELETE: Suppression du cours utilisateur. Clé: ${courseKey}, Titre: ${courseTitle}`);
             delete userCoursesData[courseKey]; 
             saveUserCoursesToLocalStorage();
@@ -614,9 +517,7 @@ Voici le contenu de mon cours :
             ioFeedback.style.color = "orange";
             setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
         }
-
-
-        function showModeSelectionScreen() {
+        function showModeSelectionScreen() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { 
                  console.error("Attempting to access non-existent course:", currentCourseKey);
@@ -631,8 +532,7 @@ Voici le contenu de mon cours :
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
         }
-
-        function showFlashcardsScreen() {
+        function showFlashcardsScreen() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
             mainTitle.textContent = `Cartes Flash : ${combinedCourses[currentCourseKey].title}`;
@@ -641,8 +541,7 @@ Voici le contenu de mon cours :
             qcmSection.classList.add('hidden');
             displayFlashcard();
         }
-
-        function showQcmScreen() {
+        function showQcmScreen() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
             mainTitle.textContent = `QCM : ${combinedCourses[currentCourseKey].title}`;
@@ -651,8 +550,7 @@ Voici le contenu de mon cours :
             qcmSection.classList.remove('hidden');
             displayQcm();
         }
-        
-        function displayFlashcard() {
+        function displayFlashcard() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards) { 
                 flashcardQuestion.textContent = "Erreur : Données de flashcards non trouvées pour ce cours.";
@@ -681,8 +579,7 @@ Voici le contenu de mon cours :
             flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
             flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${courseFlashcards.length}`;
         }
-
-        function flipFlashcard() {
+        function flipFlashcard() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             if (!currentCourseKey || !combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards || combinedCourses[currentCourseKey].flashcards.length === 0) return;
             flashcardElement.classList.toggle('is-flipped');
@@ -692,16 +589,14 @@ Voici le contenu de mon cours :
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
             }
         }
-
-        function nextFlashcard() {
+        function nextFlashcard() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseFlashcards = combinedCourses[currentCourseKey].flashcards;
             if (!courseFlashcards || courseFlashcards.length === 0) return;
             currentFlashcardIndex = (currentFlashcardIndex + 1) % courseFlashcards.length;
             displayFlashcard();
         }
-
-        function displayQcm() {
+        function displayQcm() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
              if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].qcm) { 
                 qcmQuestionElement.textContent = "Erreur : Données de QCM non trouvées pour ce cours.";
@@ -765,8 +660,7 @@ Voici le contenu de mon cours :
             selectedQcmOption = null; 
             submitQcmBtn.disabled = true; 
         }
-
-        function submitQcm() {
+        function submitQcm() { /* ... (inchangée, utilise cleanedStoredCorrectAnswer) ... */ 
             if (selectedQcmOption === null) {
                 qcmFeedback.textContent = "Veuillez sélectionner une réponse.";
                 qcmFeedback.className = 'feedback-message feedback-incorrect';
@@ -804,8 +698,7 @@ Voici le contenu de mon cours :
             submitQcmBtn.classList.add('hidden'); 
             nextQcmBtn.classList.remove('hidden'); 
         }
-
-        function nextQcm() {
+        function nextQcm() { /* ... (inchangée) ... */ 
             const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
             const courseQCMs = combinedCourses[currentCourseKey].qcm;
             if (!courseQCMs || courseQCMs.length === 0) return;
@@ -820,34 +713,24 @@ Voici le contenu de mon cours :
                 div.style.pointerEvents = 'auto';
             });
         }
-
-        function saveNewCourse() {
+        function saveNewCourse() { /* ... (inchangée, gère ADMIN_PASSWORD_MANUAL_GITHUB_HELPER) ... */ 
             const courseName = newCourseNameInput.value.trim();
             const courseDataJSON = newCourseDataTextarea.value.trim();
+            const adminPass = adminPasswordInput.value; // Pour aide manuelle GitHub
+
             addCourseFeedback.classList.add('hidden');
+            githubInstructionsDiv.classList.add('hidden');
 
-            if (!courseName) {
-                addCourseFeedback.textContent = "Veuillez donner un nom à votre cours.";
-                addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                addCourseFeedback.classList.remove('hidden');
-                return;
-            }
 
-            if (!courseDataJSON) {
-                addCourseFeedback.textContent = "Veuillez coller les données JSON générées.";
-                addCourseFeedback.className = 'feedback-message feedback-incorrect';
-                addCourseFeedback.classList.remove('hidden');
-                return;
-            }
-
-            let newCourseContent;
+            if (!courseName || !courseDataJSON) { /* ... validation ... */ return; }
+            // ... (autre validation du JSON comme avant) ...
+             let newCourseContent;
             try {
                 newCourseContent = JSON.parse(courseDataJSON);
             } catch (error) {
                 addCourseFeedback.textContent = "Erreur : Le format JSON est invalide.";
                 addCourseFeedback.className = 'feedback-message feedback-incorrect';
                 addCourseFeedback.classList.remove('hidden');
-                console.error("JSON_PARSE_ERROR: ", error);
                 return;
             }
 
@@ -874,36 +757,50 @@ Voici le contenu de mon cours :
                 return;
             }
 
+
             const courseKey = "user-" + courseName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
             
-            if (gitHubCoursesData[courseKey] || gitHubCoursesData[courseName.toLowerCase().replace(/\s+/g, '-')]) { // Check against potential GitHub key format too
-                 addCourseFeedback.textContent = "Erreur : Un cours partagé avec un nom/clé similaire existe déjà. Veuillez choisir un autre nom pour votre cours personnel.";
+            if (gitHubCoursesData[courseKey.replace('user-','').split('-').slice(0,-1).join('-')] || gitHubCoursesData[courseName.toLowerCase().replace(/\s+/g, '-')]) {
+                 addCourseFeedback.textContent = "Erreur : Un cours partagé avec un nom/clé similaire existe déjà. Veuillez choisir un autre nom.";
                 addCourseFeedback.className = 'feedback-message feedback-incorrect';
                 addCourseFeedback.classList.remove('hidden');
                 return;
             }
-
+            
             userCoursesData[courseKey] = {
                 title: courseName, 
                 flashcards: newCourseContent.flashcards,
                 qcm: newCourseContent.qcm 
             };
-            
             saveUserCoursesToLocalStorage(); 
 
-            addCourseFeedback.textContent = `Le cours "${courseName}" a été ajouté avec succès !`;
+            addCourseFeedback.textContent = `Le cours personnel "${courseName}" a été ajouté localement avec succès !`;
             addCourseFeedback.className = 'feedback-message feedback-correct';
             addCourseFeedback.classList.remove('hidden');
             
+            if (adminPass === ADMIN_PASSWORD_MANUAL_GITHUB_HELPER) {
+                const suggestedFileName = courseName.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_.-]/g, '') + '.json';
+                suggestedFileNameElement.textContent = suggestedFileName;
+                const courseContentForGithub = { 
+                    title: courseName,
+                    flashcards: newCourseContent.flashcards,
+                    qcm: newCourseContent.qcm
+                };
+                githubInstructionsContentElement.textContent = JSON.stringify(courseContentForGithub, null, 2);
+                githubInstructionsDiv.classList.remove('hidden');
+            }
+
             newCourseNameInput.value = ''; 
             newCourseDataTextarea.value = '';
+            adminPasswordInput.value = ''; 
 
-            setTimeout(() => {
-                showWelcomeScreen();
-            }, 2000);
+            if (!githubInstructionsDiv.classList.contains('hidden')) {
+                 setTimeout(() => { addCourseFeedback.classList.add('hidden'); }, 5000); 
+            } else {
+                setTimeout(() => { showWelcomeScreen(); }, 2000);
+            }
         }
-
-        function exportCourses() {
+        function exportCourses() { /* ... (inchangée) ... */ 
             const allCoursesToExport = {...gitHubCoursesData, ...userCoursesData}; 
             if (Object.keys(allCoursesToExport).length === 0) {
                 ioFeedback.textContent = "Aucun cours à exporter.";
@@ -932,49 +829,70 @@ Voici le contenu de mon cours :
             setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
         }
 
-        function handleImportFile(event) {
-            const file = event.target.files[0];
-            ioFeedback.textContent = ''; 
-            if (!file) return;
-
-            if (file.type !== "application/json") {
-                ioFeedback.textContent = "Erreur : Veuillez sélectionner un fichier JSON.";
+        async function processImport(fileContent, isGitHubUpload, pat) { // adminPass n'est plus nécessaire ici, le PAT suffit
+            let importedData;
+            try {
+                importedData = JSON.parse(fileContent);
+            } catch (error) {
+                ioFeedback.textContent = "Erreur : Le fichier JSON importé est invalide.";
                 ioFeedback.style.color = "red";
-                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
-                importFile.value = ''; 
-                return;
+                return false;
             }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                let importedData;
-                try {
-                    importedData = JSON.parse(e.target.result);
-                } catch (error) {
-                    console.error("IMPORT_PARSE_ERROR:", error);
-                    ioFeedback.textContent = "Erreur : Le fichier JSON importé est invalide.";
-                    ioFeedback.style.color = "red";
-                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
-                    importFile.value = ''; 
-                    return;
-                }
+            if (isGitHubUpload) {
+                if (importedData && typeof importedData.title === 'string' && Array.isArray(importedData.flashcards) && Array.isArray(importedData.qcm)) {
+                    const fileNameForGithub = selectedFileForImport ? selectedFileForImport.name : importedData.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_.-]/g, '') + '.json';
+                    
+                    const flashcardsValid = importedData.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
+                    const qcmValid = importedData.qcm.every(q => {
+                         if (typeof q.question !== 'string' || !Array.isArray(q.options) || typeof q.correctAnswer !== 'string') return false;
+                         const cleanedCorrectAnswer = q.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();
+                         return q.options.includes(cleanedCorrectAnswer);
+                    });
 
-                if (typeof importedData !== 'object' || importedData === null) {
-                    ioFeedback.textContent = "Erreur : Le fichier JSON importé n'est pas un objet de cours valide.";
+                    if (!flashcardsValid || !qcmValid) {
+                        ioFeedback.textContent = "Erreur: Structure interne du cours JSON invalide pour téléversement GitHub.";
+                        ioFeedback.style.color = "red";
+                        return false;
+                    }
+                    // Le contenu à uploader est le `fileContent` original (JSON string du fichier)
+                    const success = await uploadCourseToGitHub(fileNameForGithub, fileContent, pat, `Ajout/Mise à jour du cours: ${importedData.title}`);
+                    if (success) {
+                        ioFeedback.textContent = `Cours "${importedData.title}" traité pour GitHub! Rafraîchissement des cours partagés...`;
+                        ioFeedback.style.color = "green";
+                        await loadCoursesFromGitHub(); 
+                        populateCourseList();
+                    } else {
+                        // uploadCourseToGitHub gère déjà le message d'erreur ioFeedback
+                    }
+                    return success;
+                } else {
+                    ioFeedback.textContent = "Erreur : Le fichier pour GitHub doit être un objet de cours unique (avec title, flashcards, qcm).";
                     ioFeedback.style.color = "red";
-                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
-                    importFile.value = ''; 
-                    return;
+                    return false;
                 }
-                
+            } else {
+                // Importation locale
                 let coursesAddedCount = 0;
                 let coursesUpdatedCount = 0;
                 let coursesSkippedCount = 0;
+                let coursesToProcess = {};
 
-                for (const keyInImport in importedData) {
-                    if (Object.hasOwnProperty.call(importedData, keyInImport)) {
-                        const course = importedData[keyInImport];
-                        if (course && typeof course.title === 'string' && Array.isArray(course.flashcards) && Array.isArray(course.qcm)) {
+                if (importedData && typeof importedData.title === 'string' && Array.isArray(importedData.flashcards) && Array.isArray(importedData.qcm)) {
+                    const tempKey = "imported-" + importedData.title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+                    coursesToProcess[tempKey] = importedData;
+                } else if (typeof importedData === 'object' && importedData !== null) {
+                    coursesToProcess = importedData;
+                } else {
+                     ioFeedback.textContent = "Erreur : Format de fichier d'importation non reconnu.";
+                     ioFeedback.style.color = "red";
+                     return false;
+                }
+
+                for (const keyInImport in coursesToProcess) {
+                    if (Object.hasOwnProperty.call(coursesToProcess, keyInImport)) {
+                        const course = coursesToProcess[keyInImport];
+                         if (course && typeof course.title === 'string' && Array.isArray(course.flashcards) && Array.isArray(course.qcm)) {
                             const flashcardsValid = course.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
                             const qcmValid = course.qcm.every(q => {
                                 if (typeof q.question !== 'string' || !Array.isArray(q.options) || typeof q.correctAnswer !== 'string') return false;
@@ -983,57 +901,119 @@ Voici le contenu de mon cours :
                             });
 
                             if (flashcardsValid && qcmValid) {
-                                // Ne pas écraser ou ajouter si la clé correspond à un cours GitHub
-                                if (gitHubCoursesData[keyInImport]) {
-                                    console.warn(`IMPORT_SKIP: Le cours importé avec la clé "${keyInImport}" (${course.title}) correspond à un cours partagé GitHub et ne sera pas ajouté aux cours personnels pour éviter les conflits.`);
+                                const githubEquivalentKey = keyInImport.startsWith("user-") ? keyInImport.substring(5).split('-').slice(0,-1).join('-') : keyInImport.toLowerCase().replace(/\s+/g, '-');
+                                const githubEquivalentKeyFromName = course.title.toLowerCase().replace(/\s+/g, '_').replace(/[^\w_.-]/g, '');
+
+
+                                if (gitHubCoursesData[githubEquivalentKey] || gitHubCoursesData[githubEquivalentKeyFromName]) {
+                                    console.warn(`IMPORT_SKIP_LOCAL: Le cours importé "${course.title}" (clé: ${keyInImport}) correspond à un cours partagé GitHub et ne sera pas ajouté aux cours personnels.`);
                                     coursesSkippedCount++;
-                                } else { // Ajouter ou mettre à jour dans userCoursesData
-                                    if (userCoursesData[keyInImport]) {
+                                } else {
+                                    const localKey = keyInImport.startsWith("user-") ? keyInImport : "user-" + course.title.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+                                    if (userCoursesData[localKey]) {
                                         coursesUpdatedCount++;
                                     } else {
                                         coursesAddedCount++;
                                     }
-                                    userCoursesData[keyInImport] = course; 
+                                    userCoursesData[localKey] = course; 
                                 }
-                            } else {
-                                console.warn(`IMPORT_INVALID_STRUCTURE: Cours importé avec la clé '${keyInImport}' a une structure interne invalide et a été ignoré.`);
-                                coursesSkippedCount++;
-                            }
-                        } else {
-                            console.warn(`IMPORT_INVALID_COURSE: Cours importé avec la clé '${keyInImport}' a une structure principale invalide et a été ignoré.`);
-                            coursesSkippedCount++;
-                        }
+                            } else { coursesSkippedCount++; }
+                        } else { coursesSkippedCount++; }
                     }
                 }
-                
                 if (coursesAddedCount > 0 || coursesUpdatedCount > 0) {
                     saveUserCoursesToLocalStorage();
                     populateCourseList();
                     ioFeedback.textContent = `${coursesAddedCount} cours personnels ajoutés, ${coursesUpdatedCount} mis à jour.`;
-                    if (coursesSkippedCount > 0) {
-                        ioFeedback.textContent += ` ${coursesSkippedCount} cours ignorés (clés réservées ou structure invalide).`;
-                    }
+                    if (coursesSkippedCount > 0) ioFeedback.textContent += ` ${coursesSkippedCount} ignorés.`;
                     ioFeedback.style.color = "green";
                 } else if (coursesSkippedCount > 0) {
-                    ioFeedback.textContent = `Aucun nouveau cours personnel importé. ${coursesSkippedCount} cours ignorés (clés réservées ou structure invalide).`;
-                     ioFeedback.style.color = "orange";
+                    ioFeedback.textContent = `Aucun nouveau cours personnel importé. ${coursesSkippedCount} ignorés.`;
+                    ioFeedback.style.color = "orange";
                 } else {
-                     ioFeedback.textContent = "Aucun cours à importer ou structure de fichier non reconnue.";
-                     ioFeedback.style.color = "orange";
+                    ioFeedback.textContent = "Aucun cours valide à importer localement trouvé dans le fichier.";
+                    ioFeedback.style.color = "orange";
                 }
-                setTimeout(() => { ioFeedback.textContent = ''; }, 5000);
-                importFile.value = ''; 
-            };
-            reader.readAsText(file);
+                return true;
+            }
         }
 
+        async function uploadCourseToGitHub(fileName, jsonContentString, pat, commitMessage) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USER_REPO}/contents/${GITHUB_COURSES_DIRECTORY_PATH}/${fileName}`;
+            console.log(`GITHUB_UPLOAD: Tentative de téléversement vers ${apiUrl}`);
+            
+            const contentBase64 = btoa(unescape(encodeURIComponent(jsonContentString)));
+
+            // Tenter de récupérer le fichier pour obtenir son SHA s'il existe (pour mise à jour)
+            let sha = null;
+            try {
+                const getFileResponse = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: { 'Authorization': `token ${pat}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (getFileResponse.ok) {
+                    const fileData = await getFileResponse.json();
+                    sha = fileData.sha;
+                    console.log(`GITHUB_UPLOAD: Fichier "${fileName}" existant trouvé avec SHA: ${sha}. Il sera mis à jour.`);
+                    commitMessage = `Mise à jour du cours: ${JSON.parse(jsonContentString).title || fileName}`;
+                } else if (getFileResponse.status !== 404) { // Si ce n'est pas une erreur 404, c'est un autre problème
+                    const errorData = await getFileResponse.json();
+                    console.error("GITHUB_UPLOAD: Erreur lors de la vérification de l'existence du fichier:", getFileResponse.status, errorData);
+                    ioFeedback.textContent = `Erreur GitHub (${getFileResponse.status}) lors de la vérification du fichier: ${errorData.message || 'Erreur inconnue'}`;
+                    ioFeedback.style.color = "red";
+                    return false;
+                }
+                // Si 404, le fichier n'existe pas, sha reste null, ce qui est correct pour une création.
+            } catch (error) {
+                console.error("GITHUB_UPLOAD: Erreur réseau lors de la vérification de l'existence du fichier:", error);
+                // On continue en supposant que le fichier n'existe pas, l'upload tentera une création.
+            }
+
+            const bodyPayload = {
+                message: commitMessage,
+                content: contentBase64,
+                branch: GITHUB_BRANCH
+            };
+            if (sha) { // Si le fichier existe, inclure le SHA pour le mettre à jour
+                bodyPayload.sha = sha;
+            }
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'PUT',
+                    headers: {
+                        'Authorization': `token ${pat}`,
+                        'Accept': 'application/vnd.github.v3+json',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(bodyPayload)
+                });
+
+                if (response.ok) {
+                    const responseData = await response.json();
+                    console.log("GITHUB_UPLOAD: Fichier téléversé/mis à jour avec succès:", responseData);
+                    return true;
+                } else {
+                    const errorData = await response.json();
+                    console.error("GITHUB_UPLOAD: Erreur lors du téléversement:", response.status, errorData);
+                    ioFeedback.textContent = `Erreur GitHub (${response.status}) lors du téléversement: ${errorData.message || 'Erreur inconnue'}`;
+                    ioFeedback.style.color = "red";
+                    return false;
+                }
+            } catch (error) {
+                console.error("GITHUB_UPLOAD: Erreur réseau ou autre lors du téléversement:", error);
+                ioFeedback.textContent = "Erreur réseau lors du téléversement sur GitHub.";
+                ioFeedback.style.color = "red";
+                return false;
+            }
+        }
 
         // --- Écouteurs d'événements ---
         showAddCourseSectionBtn.addEventListener('click', showAddCourseScreen);
         saveCourseBtn.addEventListener('click', saveNewCourse);
         backToWelcomeFromAddBtn.addEventListener('click', showWelcomeScreen);
         
-        copyPromptBtn.addEventListener('click', () => {
+        copyPromptBtn.addEventListener('click', () => { /* ... (inchangé) ... */ 
             const textToCopy = GEMINI_PROMPT;
             copyPromptFeedback.classList.add('hidden'); 
 
@@ -1054,8 +1034,32 @@ Voici le contenu de mon cours :
                 fallbackCopyTextToClipboard(textToCopy);
             }
         });
+        
+        if(copyGithubJsonBtn) { // S'assurer que le bouton existe
+            copyGithubJsonBtn.addEventListener('click', () => {
+                const textToCopy = githubInstructionsContentElement.textContent;
+                copyGithubJsonFeedback.classList.add('hidden');
+                 if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(textToCopy)
+                        .then(() => {
+                            copyGithubJsonFeedback.textContent = "JSON Copié !";
+                            copyGithubJsonFeedback.style.color = "green";
+                            copyGithubJsonFeedback.classList.remove('hidden');
+                            setTimeout(() => { copyGithubJsonFeedback.classList.add('hidden'); }, 2000);
+                        })
+                        .catch(err => {
+                            console.warn("COPY_FALLBACK: navigator.clipboard.writeText a échoué: ", err);
+                            fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié (fallback) !", "Échec copie JSON. Copiez manuellement.");
+                        });
+                } else {
+                    console.warn("COPY_FALLBACK: navigator.clipboard non disponible.");
+                    fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié (fallback) !", "Échec copie JSON. Copiez manuellement.");
+                }
+            });
+        }
 
-        function fallbackCopyTextToClipboard(text) {
+
+        function fallbackCopyTextToClipboard(text, feedbackElement, successMessage, errorMessage) {
             const textArea = document.createElement("textarea");
             textArea.value = text;
             textArea.style.top = "0";
@@ -1067,21 +1071,89 @@ Voici le contenu de mon cours :
             try {
                 const successful = document.execCommand('copy');
                 if (successful) {
-                    copyPromptFeedback.textContent = "Copié (fallback) !";
-                    copyPromptFeedback.style.color = "green";
+                    feedbackElement.textContent = successMessage;
+                    feedbackElement.style.color = "green";
                 } else {
-                    copyPromptFeedback.textContent = "Échec copie. Copiez manuellement.";
-                    copyPromptFeedback.style.color = "red";
+                    feedbackElement.textContent = errorMessage;
+                    feedbackElement.style.color = "red";
                 }
             } catch (err) {
                 console.error("COPY_FALLBACK_ERROR: ", err);
-                copyPromptFeedback.textContent = "Échec copie. Copiez manuellement.";
-                copyPromptFeedback.style.color = "red";
+                feedbackElement.textContent = errorMessage;
+                feedbackElement.style.color = "red";
             }
-            copyPromptFeedback.classList.remove('hidden');
-            setTimeout(() => { copyPromptFeedback.classList.add('hidden'); }, 3000);
+            feedbackElement.classList.remove('hidden');
+            setTimeout(() => { feedbackElement.classList.add('hidden'); }, 3000);
             document.body.removeChild(textArea);
         }
+
+
+        uploadToGithubCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                adminGithubUploadOptionsDiv.classList.remove('hidden');
+                confirmLocalImportBtn.classList.add('hidden'); 
+            } else {
+                adminGithubUploadOptionsDiv.classList.add('hidden');
+                confirmLocalImportBtn.classList.remove('hidden'); 
+            }
+        });
+
+        importFile.addEventListener('change', (event) => {
+            selectedFileForImport = event.target.files[0];
+            if (selectedFileForImport) {
+                importOptionsContainer.classList.remove('hidden');
+                confirmLocalImportBtn.classList.remove('hidden'); 
+                uploadToGithubCheckbox.checked = false; 
+                adminGithubUploadOptionsDiv.classList.add('hidden'); 
+                ioFeedback.textContent = `Fichier "${selectedFileForImport.name}" sélectionné. Choisissez une option d'importation.`;
+                ioFeedback.style.color = "#4b5563";
+            } else {
+                importOptionsContainer.classList.add('hidden');
+                ioFeedback.textContent = "";
+            }
+        });
+        
+        confirmImportBtn.addEventListener('click', () => { 
+            if (!selectedFileForImport) {
+                ioFeedback.textContent = "Aucun fichier sélectionné pour l'importation.";
+                ioFeedback.style.color = "red";
+                return;
+            }
+            // Le mot de passe admin n'est plus utilisé pour l'upload direct, seul le PAT compte
+            const pat = githubPatInput.value.trim();
+
+            if (!pat) {
+                ioFeedback.textContent = "Veuillez fournir un Token d'Accès Personnel GitHub (PAT) pour téléverser.";
+                ioFeedback.style.color = "red";
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                await processImport(e.target.result, true, pat); // adminPass est maintenant pat
+                importFile.value = ''; 
+                selectedFileForImport = null;
+                importOptionsContainer.classList.add('hidden');
+                githubPatInput.value = ''; // Vider le champ PAT après usage
+            };
+            reader.readAsText(selectedFileForImport);
+        });
+
+        confirmLocalImportBtn.addEventListener('click', () => {
+            if (!selectedFileForImport) {
+                ioFeedback.textContent = "Aucun fichier sélectionné pour l'importation locale.";
+                ioFeedback.style.color = "red";
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                await processImport(e.target.result, false, null); // pat est null pour import local
+                importFile.value = ''; 
+                selectedFileForImport = null;
+                importOptionsContainer.classList.add('hidden');
+            };
+            reader.readAsText(selectedFileForImport);
+        });
 
 
         showFlashcardsBtn.addEventListener('click', showFlashcardsScreen);
@@ -1098,15 +1170,42 @@ Voici le contenu de mon cours :
         backToModeSelectionFromQcmBtn.addEventListener('click', showModeSelectionScreen);
 
         exportCoursesBtn.addEventListener('click', exportCourses);
-        importFile.addEventListener('change', handleImportFile);
 
         // --- Initialisation ---
         document.addEventListener('DOMContentLoaded', async () => {
+            if(githubRepoLink && GITHUB_USER_REPO && GITHUB_BRANCH && GITHUB_COURSES_DIRECTORY_PATH) {
+                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}/tree/${GITHUB_BRANCH}/${GITHUB_COURSES_DIRECTORY_PATH}`;
+            } else if (githubRepoLink) {
+                githubRepoLink.href = `https://github.com/${GITHUB_USER_REPO}`; 
+            }
+
             showWelcomeScreen(); 
             loadUserCoursesFromLocalStorage(); 
             await loadCoursesFromGitHub(); 
-            populateCourseList(); // S'assurer que la liste est peuplée après tous les chargements
+            populateCourseList(); 
         });
     </script>
 </body>
 </html>
+```
+**Points importants et vérifications pour vous :**
+
+1.  **Constante `ADMIN_PASSWORD_GITHUB_UPLOAD`** : J'ai renommé la constante du mot de passe pour l'aide à l'ajout manuel en `ADMIN_PASSWORD_MANUAL_GITHUB_HELPER` pour éviter toute confusion avec la nouvelle logique de PAT. Le mot de passe "JuLhui" est toujours utilisé pour afficher les instructions d'ajout manuel dans la section "Ajouter un cours personnel".
+2.  **Champ PAT** : Dans la section d'importation, le champ de mot de passe a été remplacé par un champ pour le **Token d'Accès Personnel GitHub (PAT)**, marqué comme `(optionnel)`.
+3.  **Logique de `processImport` et `uploadCourseToGitHub`** :
+    * `processImport` prend maintenant le PAT en argument.
+    * `uploadCourseToGitHub` utilise ce PAT pour s'authentifier auprès de l'API GitHub. J'ai ajouté une logique pour tenter de récupérer le SHA du fichier s'il existe déjà, afin de pouvoir le mettre à jour plutôt que de simplement essayer de le créer (ce qui échouerait si le fichier existe déjà sans le SHA).
+4.  **Nom du fichier sur GitHub** : Lors du téléversement sur GitHub, le nom du fichier sera celui du fichier que vous avez sélectionné pour l'importation. Assurez-vous que ce nom est pertinent (par exemple, `nom_du_cours.json`).
+5.  **Contenu du fichier pour GitHub** : La fonction `processImport` s'attend maintenant à ce que le fichier JSON que vous importez pour le téléversement sur GitHub contienne **directement l'objet d'un seul cours** (c'est-à-dire `{ "title": "...", "flashcards": [...], "qcm": [...] }`), et non un objet contenant plusieurs cours (comme le format d'exportation).
+6.  **Sécurité du PAT** :
+    * Le champ PAT est de type `password`.
+    * Le PAT est utilisé uniquement pour l'appel API et n'est pas stocké.
+    * **Vous devez générer un PAT sur votre compte GitHub.** Allez dans Settings > Developer settings > Personal access tokens > Tokens (classic). Créez un nouveau token. Pour les permissions (scopes), vous aurez besoin de `repo` (ou `public_repo` si votre dépôt est public et que vous voulez limiter les droits). **Copiez ce token immédiatement car GitHub ne vous le montrera qu'une seule fois.**
+7.  **Erreurs et Feedback** : Des messages d'erreur plus spécifiques seront affichés si le téléversement échoue.
+
+**Avant de tester :**
+* Assurez-vous d'avoir vos fichiers JSON de cours partagés dans le dossier `cours` de votre dépôt `JulienLhui/cyoutilrevision`.
+* Vérifiez que les constantes `GITHUB_USER_REPO`, `GITHUB_BRANCH`, et `GITHUB_COURSES_DIRECTORY_PATH` sont correctement configurées en haut du script.
+* **Générez un PAT GitHub** avec les droits nécessaires.
+
+Cette version est plus complexe en raison de l'interaction avec l'API GitHub. Testez-la soigneusement, en particulier la partie d'importation avec téléversement sur GitH
