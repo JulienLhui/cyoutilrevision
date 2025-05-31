@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Outil de révision multi-cours</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .flashcard-container {
+            perspective: 1000px;
+            min-height: 200px;
+        }
+        .flashcard {
+            width: 100%;
+            height: 200px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .flashcard.is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            text-align: center;
+        }
+        .flashcard-front {
+            background-color: #ffffff;
+            color: #1f2937;
+        }
+        .flashcard-back {
+            background-color: #4b5563;
+            color: #ffffff;
+            transform: rotateY(180deg);
+        }
+        .qcm-option {
+            transition: background-color 0.3s;
+        }
+        .qcm-option:hover {
+            background-color: #e5e7eb;
+        }
+        .correct-answer {
+            background-color: #d1fae5 !important;
+            border-left: 4px solid #10b981;
+        }
+        .incorrect-answer {
+            background-color: #fee2e2 !important;
+            border-left: 4px solid #ef4444;
+        }
+        .btn {
+            transition: background-color 0.3s, transform 0.1s;
+        }
+        .btn:hover {
+            opacity: 0.9;
+        }
+        .btn:active {
+            transform: scale(0.98);
+        }
+        .feedback-message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 16px;
+            font-weight: 500;
+            text-align: center;
+        }
+        .feedback-correct {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+        .feedback-incorrect {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+        .hidden {
+            display: none;
+        }
+        .question-counter {
+            font-size: 0.9em;
+            color: #6b7280; /* Gris-500 */
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        #addCoursePromptContainer pre, #newCourseData { /* Applied to pre for prompt, and textarea for data */
+            font-family: monospace;
+            font-size: 0.9em;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: #f9fafb;
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            max-height: 200px;
+            overflow-y: auto;
+        }
+         #newCourseData {
+            min-height: 150px;
+         }
+        .copy-feedback {
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-left: 8px;
+        }
+        .course-button-container {
+            display: inline-flex; 
+            align-items: center;
+            margin-right: 8px; 
+            margin-bottom: 8px; 
+        }
+        .delete-course-btn {
+            background-color: transparent;
+            border: none;
+            color: #ef4444; 
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: pointer;
+            padding: 0 5px;
+            line-height: 1;
+        }
+        .delete-course-btn:hover {
+            color: #dc2626; 
+        }
+        .course-section-title {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #374151; 
+            margin-bottom: 0.5rem;
+            margin-top: 1rem;
+            text-align: left;
+        }
+        /* Styles for import/export */
+        .io-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb; /* Tailwind gray-200 */
+        }
+        .io-section h3 {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #374151; /* Tailwind gray-700 */
+            margin-bottom: 0.75rem;
+        }
+        #importFile {
+            display: none; /* Hide default file input */
+        }
+        .import-label-btn {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-2xl bg-white shadow-xl rounded-lg p-6 md:p-8">
+        <header class="mb-6 text-center">
+            <h1 id="mainTitle" class="text-3xl font-bold text-gray-800">Mon Outil de Révision</h1>
+        </header>
+
+        <section id="welcomeSection" class="py-10">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Choisissez un cours à réviser :</h2>
+            
+            <div>
+                <h3 class="course-section-title">Cours intégrés à l'outil :</h3>
+                <div id="defaultCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
+                    {/* Les boutons des cours par défaut seront injectés ici */}
+                </div>
+            </div>
+
+            <div class="mt-6">
+                <h3 class="course-section-title">Vos cours personnels (stockés localement) :</h3>
+                <div id="localCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
+                    {/* Les boutons des cours locaux seront injectés ici */}
+                </div>
+                <p id="noLocalCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours personnel ajouté pour le moment.</p>
+            </div>
+
+            <div class="text-center mt-8">
+                <button id="showAddCourseSectionBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md">Ajouter un cours</button>
+            </div>
+
+            <div class="io-section text-center md:text-left">
+                <h3 class="text-center md:text-left">Gestion des données des cours :</h3>
+                <div class="flex flex-col md:flex-row justify-center md:justify-start space-y-2 md:space-y-0 md:space-x-3 mt-2">
+                    <button id="exportCoursesBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Exporter mes cours</button>
+                    <label for="importFile" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md import-label-btn">Importer des cours</label>
+                    <input type="file" id="importFile" accept=".json">
+                </div>
+                <p id="ioFeedback" class="text-sm text-gray-600 mt-3 text-center md:text-left"></p>
+            </div>
+        </section>
+
+        <section id="addCourseSection" class="hidden py-6">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Ajouter un nouveau cours</h2>
+            
+            <div class="mb-4">
+                <label for="newCourseName" class="block text-sm font-medium text-gray-700 mb-1">Nom du nouveau cours :</label>
+                <input type="text" id="newCourseName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: Histoire de l'Art Moderne">
+            </div>
+
+            <div class="mb-4">
+                <p class="block text-sm font-medium text-gray-700 mb-1">1. Copiez le prompt suivant et utilisez-le avec Gemini (ou un outil similaire) en lui fournissant le contenu de votre cours :</p>
+                <div id="addCoursePromptContainer" class="bg-gray-50 p-3 rounded-md border">
+                    <pre id="addCoursePrompt"></pre>
+                </div>
+                <button id="copyPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-2 text-xs">Copier le Prompt</button>
+                <span id="copyPromptFeedback" class="copy-feedback hidden"></span>
+            </div>
+
+            <div class="mb-6">
+                <label for="newCourseData" class="block text-sm font-medium text-gray-700 mb-1">2. Collez ici les données JSON générées :</label>
+                <textarea id="newCourseData" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
+            </div>
+            
+            <div id="addCourseFeedback" class="feedback-message hidden mb-4"></div>
+
+            <div class="flex justify-center space-x-4">
+                <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours</button>
+                <button id="backToWelcomeFromAddBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Retour à l'accueil</button>
+            </div>
+        </section>
+
+
+        <section id="modeSelectionSection" class="hidden text-center py-10">
+            <h2 id="modeSelectionTitle" class="text-2xl font-semibold text-gray-700 mb-6"></h2>
+            <div class="space-y-4 md:space-y-0 md:space-x-4 md:flex md:justify-center">
+                <button id="showFlashcardsBtn" class="btn bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md w-full md:w-auto">Cartes Flash</button>
+                <button id="showQcmBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md w-full md:w-auto">QCM</button>
+            </div>
+            <button id="backToWelcomeFromModeBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-8">Retour à l'accueil</button>
+        </section>
+
+        <section id="flashcardsSection" class="hidden">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Cartes Flash</h2>
+            <div id="flashcardCounter" class="question-counter"></div>
+            <div id="flashcardContainer" class="flashcard-container mb-4">
+                <div id="flashcard" class="flashcard">
+                    <div class="flashcard-face flashcard-front">
+                        <p id="flashcardQuestion" class="text-lg"></p>
+                    </div>
+                    <div class="flashcard-face flashcard-back">
+                        <p id="flashcardAnswer" class="text-lg"></p>
+                    </div>
+                </div>
+            </div>
+            <div id="flashcardMessage" class="text-sm text-gray-500 text-center mb-4 h-6">Cliquez sur la carte pour voir la réponse.</div>
+            <div class="flex justify-center space-x-4">
+                <button id="nextFlashcardBtn" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Suivante</button>
+            </div>
+            <button id="backToModeSelectionFromFlashcardsBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-6 block mx-auto">Retour au choix du mode</button>
+        </section>
+
+        <section id="qcmSection" class="hidden">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Questionnaire à Choix Multiples</h2>
+            <div id="qcmCounter" class="question-counter"></div>
+            <div id="qcmContainer" class="bg-gray-50 p-6 rounded-lg shadow-inner">
+                <p id="qcmQuestionElement" class="text-lg font-medium text-gray-800 mb-4"></p> 
+                <div id="qcmOptions" class="space-y-3 mb-4"></div>
+                <div id="qcmFeedback" class="feedback-message hidden"></div>
+            </div>
+            <div class="mt-6 flex justify-center space-x-4">
+                 <button id="submitQcmBtn" class="btn bg-yellow-500 hover:bg-yellow-600 text-gray-800 font-semibold py-2 px-6 rounded-lg shadow-md">Valider</button>
+                <button id="nextQcmBtn" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hidden">Suivant</button>
+            </div>
+            <button id="backToModeSelectionFromQcmBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-6 block mx-auto">Retour au choix du mode</button>
+        </section>
+    </div>
+
+    <script>
+        const REVISION_APP_COURSES_KEY = 'revisionAppCoursesData_v1';
+        let coursesData; 
+        let defaultCourseKeys = []; 
+
+        function getDefaultCourses() {
+            const defaults = {
+                "marketing-durable": {
+                    title: "Marketing Durable",
+                    flashcards: [ 
+                        { question: "Définissez la RSE (Responsabilité Sociétale de l’Entreprise).", answer: "Intégration volontaire par les entreprises des préoccupations sociales et environnementales dans leurs activités et relations avec les parties prenantes." },
+                        { question: "Quelle norme donne une définition de référence pour la RSE ?", answer: "ISO 26000 (impacts des décisions/activités sur société/environnement, comportement éthique/transparent, contribution au DD)." },
+                        { question: "Quels sont les facteurs d'émergence de la RSE ?", answer: "Pression sociétale (DD), investisseurs (ISR), initiative de l'entreprise." },
+                        { question: "Définissez le Développement Durable (DD).", answer: "Développement qui répond aux besoins du présent sans compromettre la capacité des générations futures à répondre aux leurs." },
+                        { question: "Quels sont les 3 piliers du Développement Durable ?", answer: "Économie (viable), Environnement (vivable), Social (équitable)." },
+                        { question: "Expliquez la hiérarchie de Passet.", answer: "Environnement > Social > Économie (imbrication et dépendance)." },
+                        { question: "Combien y a-t-il d'Objectifs de Développement Durable (ODD) de l'ONU ?", answer: "17 ODD (ex: Faim Zéro, Égalité des sexes, Énergie propre)." },
+                        { question: "Définissez les 'parties prenantes'.", answer: "Individus/groupes affectant ou affectés par l'entreprise." },
+                        { question: "Comment le marketing a-t-il évolué vers le marketing durable ?", answer: "Du marketing écologique (focus environnement) au marketing durable (approche holistique des 3 piliers du DD dans toutes les pratiques marketing)." },
+                        { question: "Qu'est-ce que le 'Green Gap' ?", answer: "Écart entre les intentions déclarées des consommateurs (acheter durable) et leurs comportements réels." },
+                        { question: "Qu'est-ce que l'Analyse du Cycle de Vie (ACV) ?", answer: "Outil pour évaluer les impacts environnementaux d'un produit." },
+                        { question: "Définissez l'éco-conception.", answer: "Minimiser matières, utiliser matériaux recyclés/recyclables/bio-sourcés, design durable (vs obsolescence programmée)." },
+                        { question: "Définissez le greenwashing.", answer: "Fausses allégations écologiques ou communication trompeuse sur les performances environnementales d'une entreprise/produit." },
+                        { question: "Définissez le wokewashing.", answer: "Récupération opportuniste de causes sociales par une marque sans réels engagements." },
+                        { question: "Qu'est-ce que le démarketing, illustré par KLM 'Fly Responsibly' ?", answer: "Stratégie visant à décourager (certains aspects de) la consommation." }
+                    ],
+                    qcm: [
+                        { question: "Lequel de ces éléments N'EST PAS un des 3 piliers du Développement Durable ?", options: ["Économie", "Environnement", "Social", "Technologie"], correctAnswer: "Technologie" },
+                        { question: "Selon la hiérarchie de Passet, quel pilier est considéré comme le plus fondamental et englobant les autres ?", options: ["L'Économie", "Le Social", "L'Environnement", "Les trois sont égaux"], correctAnswer: "L'Environnement" },
+                        { question: "La norme ISO 26000 concerne principalement :", options: ["La certification des produits biologiques", "Les lignes directrices relatives à la responsabilité sociétale", "La gestion de la qualité en entreprise", "La sécurité informatique"], correctAnswer: "Les lignes directrices relatives à la responsabilité sociétale" },
+                        { question: "Un exemple de partie prenante 'secondaire' pour une entreprise pourrait être :", options: ["Un client régulier", "Un fournisseur clé", "Une ONG environnementale locale", "Un salarié de l'entreprise"], correctAnswer: "Une ONG environnementale locale" },
+                        { question: "Passer d'un focus sur l'environnement à une approche holistique des 3 piliers du DD caractérise l'évolution vers :", options: ["Le marketing vert", "Le marketing social", "Le marketing durable", "L'éco-communication"], correctAnswer: "Le marketing durable" },
+                        { question: "Lorsqu'une entreprise intègre le Développement Durable au cœur de son business model, on parle d'un niveau d'intégration :", options: ["Défensif", "Proactif", "Réactif", "Intégratif"], correctAnswer: "Intégratif" },
+                        { question: "L'approche éthique qui se concentre sur le respect des devoirs et des règles est dite :", options: ["Téléologique", "Utilitariste", "Déontologique", "Comportementale"], correctAnswer: "Déontologique" },
+                        { question: "Laquelle de ces définitions correspond au 'Green Gap' ?", options: ["Un label certifiant les produits écologiques.", "L'écart entre les intentions d'achat durable des consommateurs et leurs comportements réels.", "Une taxe gouvernementale sur les entreprises polluantes.", "Le manque d'espaces verts en milieu urbain."], correctAnswer: "L'écart entre les intentions d'achat durable des consommateurs et leurs comportements réels." },
+                        { question: "Quel facteur N'explique PAS typiquement le 'Green Gap' ?", options: ["Le prix élevé des produits durables", "Le manque d'information claire et crédible", "La forte conviction écologique des consommateurs", "Les habitudes de consommation ancrées"], correctAnswer: "La forte conviction écologique des consommateurs" },
+                        { question: "Pour réduire le 'Green Gap', une entreprise peut chercher à :", options: ["Augmenter l'effort perçu pour acheter durable", "Rendre l'option durable moins accessible", "Associer des bénéfices personnels (santé, économies) aux bénéfices collectifs", "Cacher les normes sociales positives"], correctAnswer: "Associer des bénéfices personnels (santé, économies) aux bénéfices collectifs" },
+                        { question: "La 'valeur étendue' du point de vue consommateur prend en compte les impacts du produit durant quelles étapes de son cycle de vie ?", options: ["Uniquement avant la consommation (Ante)", "Uniquement pendant la consommation (Peri)", "Uniquement après la consommation (Post)", "Avant, pendant et après la consommation (Ante, Peri, Post)"], correctAnswer: "Avant, pendant et après la consommation (Ante, Peri, Post)" },
+                        { question: "L'Analyse du Cycle de Vie (ACV) d'un produit sert principalement à :", options: ["Fixer son prix de vente", "Évaluer ses impacts environnementaux globaux", "Définir sa stratégie publicitaire", "Mesurer la satisfaction client"], correctAnswer: "Évaluer ses impacts environnementaux globaux" },
+                        { question: "L'obsolescence programmée de type 'psychologique' signifie que :", options: ["Le produit tombe en panne après une durée déterminée", "Les pièces de rechange deviennent introuvables", "Le produit est perçu comme démodé ou dépassé par de nouvelles versions", "Le système d'exploitation n'est plus mis à jour"], correctAnswer: "Le produit est perçu comme démodé ou dépassé par de nouvelles versions" },
+                        { question: "Laquelle de ces actions relève de l'éco-conception d'un emballage ?", options: ["Utiliser un maximum de matière pour protéger le produit", "Choisir des encres non recyclables pour un meilleur rendu visuel", "Réduire la quantité de matière utilisée et privilégier les matériaux recyclés", "Rendre l'emballage difficile à ouvrir pour des raisons de sécurité"], correctAnswer: "Réduire la quantité de matière utilisée et privilégier les matériaux recyclés" },
+                        { question: "La norme ISO 14001 est relative à :", options: ["La qualité des produits alimentaires", "Le management environnemental en entreprise", "La sécurité des jouets pour enfants", "L'éthique dans la publicité"], correctAnswer: "Le management environnemental en entreprise" },
+                        { question: "La Responsabilité Élargie du Producteur (REP) implique que :", options: ["Le consommateur est seul responsable de la fin de vie du produit", "Le distributeur doit collecter tous les produits usagés", "Le fabricant est responsable de la gestion de la fin de vie de ses produits", "L'État prend en charge le recyclage de tous les déchets"], correctAnswer: "Le fabricant est responsable de la gestion de la fin de vie de ses produits" },
+                        { question: "La 'shrinkflation' est une pratique qui consiste à :", options: ["Augmenter la taille du produit en gardant le même prix", "Réduire la quantité du produit en gardant ou augmentant le prix", "Utiliser des ingrédients de moindre qualité pour réduire les coûts", "Communiquer de manière trompeuse sur les bienfaits d'un produit"], correctAnswer: "Réduire la quantité du produit en gardant ou augmentant le prix" },
+                        { question: "Vendre l'usage d'un bien plutôt que le bien lui-même (ex: location d'outils) relève de :", options: ["L'économie circulaire", "L'économie de fonctionnalité", "Le marketing de l'offre", "La seconde vie"], correctAnswer: "L'économie de fonctionnalité" },
+                        { question: "Lorsqu'une entreprise choisit de ne proposer que des options durables à ses clients, en retirant les alternatives moins responsables, on parle de :", options: ["Marketing viral", "Choice editing (ou marketing de l'offre)", "Démarketing", "Marketing direct"], correctAnswer: "Choice editing (ou marketing de l'offre)" },
+                        { question: "Une communication qui utilise l'humour pour sensibiliser à des enjeux durables tout en proposant des solutions est considérée comme :", options: ["Toujours inefficace car pas assez sérieuse", "Une forme de greenwashing", "Un levier potentiellement efficace si bien utilisé", "Uniquement destinée aux enfants"], correctAnswer: "Un levier potentiellement efficace si bien utilisé" },
+                        { question: "Le 'greenhushing' se définit comme :", options: ["Communiquer excessivement sur des actions écologiques mineures", "Ne pas communiquer sur ses actions RSE par peur d'être accusé de greenwashing", "Utiliser des labels environnementaux non certifiés", "Critiquer ouvertement les pratiques non durables des concurrents"], correctAnswer: "Ne pas communiquer sur ses actions RSE par peur d'être accusé de greenwashing" },
+                        { question: "Le 'digital éco-responsable' vise notamment à :", options: ["Augmenter la consommation énergétique des serveurs pour plus de rapidité", "Créer des sites web plus lourds avec plus d'animations", "Réduire l'impact environnemental des technologies numériques (éco-conception web, sobriété)", "Encourager le remplacement fréquent des appareils électroniques"], correctAnswer: "Réduire l'impact environnemental des technologies numériques (éco-conception web, sobriété)" },
+                        { question: "Une 'entreprise à mission', comme illustré par DayByDay, se caractérise par :", options: ["Son objectif unique de maximisation du profit", "L'inscription de sa raison d'être sociale/environnementale dans ses statuts", "Son absence totale d'activité commerciale", "Sa dépendance exclusive aux subventions publiques"], correctAnswer: "L'inscription de sa raison d'être sociale/environnementale dans ses statuts" },
+                        { question: "La stratégie de KLM avec sa campagne 'Fly Responsibly', invitant à réfléchir à la nécessité de prendre l'avion, est un exemple de :", options: ["Marketing promotionnel intensif", "Greenwashing flagrant", "Démarketing", "Marketing direct auprès des voyageurs fréquents"], correctAnswer: "Démarketing" },
+                        { question: "Lequel de ces éléments est un facteur clé de succès d'un marketing responsable ?", options: ["Agir de manière isolée sans cohérence avec la stratégie globale", "Se concentrer uniquement sur les bénéfices à court terme pour l'entreprise", "Impliquer ses parties prenantes et co-construire les solutions", "Éviter toute communication sur ses engagements pour ne pas être critiqué"], correctAnswer: "Impliquer ses parties prenantes et co-construire les solutions" },
+                        { question: "Pourquoi est-il crucial pour un marketing responsable de 'ne pas oublier le bénéfice client' ?", options: ["Parce que les clients n'achètent que les produits les moins chers", "Parce que les produits durables doivent aussi répondre aux attentes de qualité, prix, praticité", "Parce que le marketing durable ne concerne que la communication", "Parce que les clients ne sont pas intéressés par la durabilité"], correctAnswer: "Parce que les produits durables doivent aussi répondre aux attentes de qualité, prix, praticité" },
+                        { question: "L'outil SPOT développé par L'Oréal est un exemple de démarche visant à :", options: ["Promouvoir ses produits via les réseaux sociaux", "Mesurer les progrès en matière de durabilité de ses produits", "Calculer le bilan carbone de ses usines uniquement", "Former ses employés aux techniques de vente"], correctAnswer: "Mesurer les progrès en matière de durabilité de ses produits" }
+                    ],
+                },
+                "relation-client": {
+                    title: "Relation Client",
+                    flashcards: [ 
+                        { question: "Définition de la Fidélisation B2C (point de vue entreprise) ?", answer: "Stratégie et actions déployées pour développer une relation avec ses clients dans la durée, visant à générer des réachats." },
+                        { question: "Quelle est la métaphore illustrant la relation acquisition vs. fidélisation ?", answer: "La métaphore de la baignoire (acquisition = flux entrant, fidélisation = stock, churn = flux sortant)." },
+                        { question: "Principal enjeu économique de la fidélisation par rapport à l'acquisition ?", answer: "Le coût d’acquisition d'un nouveau client est supérieur (environ 5 fois plus cher) au coût de fidélisation d’un client existant." },
+                        { question: "Différence entre Fidélisation et Fidélité ?", answer: "Fidélisation = stratégie de l'entreprise. Fidélité = réponse du client (ré-achat)." },
+                        { question: "Qu'est-ce que la fidélité induite (ou forcée) ?", answer: "Le client n'a pas vraiment le choix (monopole, engagement contractuel, absence d'alternative)." },
+                        { question: "Qu'est-ce que la fidélité comportementale (ou par défaut/passive) ?", answer: "Le client achète par habitude, praticité ou rationalité (prix), sans préférence marquée." },
+                        { question: "Qu'est-ce que la fidélité attitudinale (ou acquise/vraie fidélité) ?", answer: "Le client a une attitude positive et un engagement réel envers la marque (engagement temporel, émotionnel)." },
+                        { question: "Qu'est-ce que le taux de churn (ou attrition) ?", answer: "Le taux de clients perdus sur une période donnée." },
+                        { question: "Qu'est-ce que l'ARPU ?", answer: "Average Revenue Per User (Dépense moyenne par utilisateur/client sur une période)." },
+                        { question: "Citez les 3 enjeux de la Connaissance Client.", answer: "COLLECTER, ORGANISER, EXPLOITER les données." },
+                        { question: "Qu'est-ce que la Zero Party Data ?", answer: "Données fournies volontairement et explicitement par le client (fiabilité très forte)." },
+                        { question: "Qu'est-ce que la méthode RFM ?", answer: "Méthode de segmentation basée sur la Récence, la Fréquence et le Montant des achats." },
+                        { question: "Citez un objectif principal d'un programme de fidélité.", answer: "Collecter les données clients / Collecter les données de vente / Développer la Customer Life Time Value." },
+                        { question: "Quels sont les 3 types d'avantages typiques d'un programme de fidélité ?", answer: "Transactionnels (earn/burn), Serviciels (livraison offerte), Émotionnels (cadeau d'anniversaire)." },
+                        { question: "Quelle tendance actuelle en fidélisation est illustrée par Darty Max ?", answer: "L'abonnement." }
+                    ],
+                    qcm: [
+                        { question: "Recruter un nouveau client coûte généralement combien de fois plus cher que de fidéliser un client existant (selon Dawkins & Reichheld) ?", options: ["2 fois", "3 fois", "5 fois", "10 fois"], correctAnswer: "5 fois" },
+                        { question: "Dans la métaphore de la baignoire, que représente le 'churn' ?", options: ["Le flux entrant de nouveaux clients", "Le stock de clients (re)acheteurs", "Le flux sortant des clients perdus", "La taille totale de la base clients"], correctAnswer: "Le flux sortant des clients perdus" },
+                        { question: "Lequel de ces éléments N'EST PAS un pré-requis indispensable à la mise en place d’une stratégie de fidélisation efficace ?", options: ["Une relation durable peut être établie", "Il est possible d'identifier les clients et de les suivre", "L'entreprise opère dans un secteur de luxe", "Tous les axes du mix marketing sont travaillés"], correctAnswer: "L'entreprise opère dans un secteur de luxe" },
+                        { question: "Laquelle de ces affirmations distingue correctement satisfaction et fidélisation ?", options: ["Un client fidèle est toujours satisfait", "Un client satisfait est toujours fidèle", "Un client fidèle peut ne pas être satisfait, et vice-versa", "Satisfaction et fidélisation sont synonymes"], correctAnswer: "Un client fidèle peut ne pas être satisfait, et vice-versa" },
+                        { question: "Laquelle de ces situations correspond à une fidélité 'forcée' (ou induite) ?", options: ["Client choisissant une marque par préférence émotionnelle", "Client achetant le produit le moins cher par calcul", "Client utilisant un service de VoD pour ses contenus exclusifs, faute d'alternative similaire", "Client achetant par habitude sans y penser"], correctAnswer: "Client utilisant un service de VoD pour ses contenus exclusifs, faute d'alternative similaire" },
+                        { question: "Un client qui achète toujours son pain dans la même boulangerie par praticité (proximité) sans y être particulièrement attaché illustre une fidélité :", options: ["Forcée", "Par défaut (passive/par inertie)", "Acquise (vraie fidélité)", "Contractuelle"], correctAnswer: "Par défaut (passive/par inertie)" },
+                        { question: "La 'vraie fidélité' selon Oliver (1997) se caractérise par :", options: ["Un simple réachat occasionnel", "Un engagement profond poussant au ré-achat malgré les influences externes", "Une contrainte contractuelle forte", "Uniquement une question de prix bas"], correctAnswer: "Un engagement profond poussant au ré-achat malgré les influences externes" },
+                        { question: "Quel indicateur mesure la proportion de clients ayant réalisé au moins un achat sur une période donnée ?", options: ["Fréquence d’achat", "Taux d’activité / MAU", "Panier moyen", "Taux de churn"], correctAnswer: "Taux d’activité / MAU" },
+                        { question: "L'ARPU (Average Revenue Per User) est un indicateur de :", options: ["Flux clients", "Activité clients", "Valeur clients", "Satisfaction clients"], correctAnswer: "Valeur clients" },
+                        { question: "Le 'Share of Wallet' (ou taux de nourriture) mesure :", options: ["Le nombre total de clients d'une entreprise", "La part des dépenses d'un client consacrée à l'entreprise dans une catégorie de produits/services", "Le coût d'acquisition d'un nouveau client", "Le temps moyen entre deux achats"], correctAnswer: "La part des dépenses d'un client consacrée à l'entreprise dans une catégorie de produits/services" },
+                        { question: "Quel type de données client a la durée de vie la plus COURTE et s'obsolète rapidement ?", options: ["Socio Démographiques (âge, genre)", "Transactionnelles (historique d'achats)", "Comportementales (traces digitales, navigation web)", "Relationnelles (avis, échanges service client)"], correctAnswer: "Comportementales (traces digitales, navigation web)" },
+                        { question: "Les données que vous collectez directement via votre site web ou votre application (ex: historique d'achats) sont des :", options: ["Zero Party Data", "First Party Data", "Second Party Data", "Third Party Data"], correctAnswer: "First Party Data" },
+                        { question: "Un Data Warehouse (DWH) stocke typiquement :", options: ["Uniquement des données brutes non structurées", "Des données structurées, prétraitées et organisées via un processus ETL", "Des données provenant exclusivement des réseaux sociaux", "Des données temporaires pour des analyses ponctuelles"], correctAnswer: "Des données structurées, prétraitées et organisées via un processus ETL" },
+                        { question: "Le RGPD (Règlement Général sur la Protection des Données) impose notamment :", options: ["La collecte de données sans consentement si elles sont anonymisées", "Le consentement explicite pour la collecte de données personnelles et garantit des droits aux clients", "L'interdiction totale de collecter des données comportementales", "Une amende maximale de 1% du CA mondial en cas de non-conformité"], correctAnswer: "Le consentement explicite pour la collecte de données personnelles et garantit des droits aux clients" },
+                        { question: "La méthode RFM est une technique de :", options: ["Calcul du ROI d'une campagne marketing", "Segmentation client basée sur la Récence, la Fréquence et le Montant des achats", "Mesure de la satisfaction client (Net Promoter Score)", "Prédiction du taux de churn à l'aide de l'intelligence artificielle"], correctAnswer: "Segmentation client basée sur la Récence, la Fréquence et le Montant des achats" },
+                        { question: "Attribuer une note à chaque client en fonction de sa propension à avoir un comportement futur (ex: résiliation) est appelé :", options: ["Segmentation", "Ciblage", "Scoring", "Monétisation"], correctAnswer: "Scoring" },
+                        { question: "Lequel de ces éléments N'EST PAS un des trois objectifs/challenges principaux d'un programme de fidélité ?", options: ["Collecter les données clients", "Augmenter le coût d'acquisition client", "Collecter les données de vente (rattacher les achats)", "Développer la Customer Life Time Value"], correctAnswer: "Augmenter le coût d'acquisition client" },
+                        { question: "Offrir des retouches gratuites ou un service client dédié aux membres d'un programme de fidélité sont des exemples d'avantages :", options: ["Transactionnels", "Serviciels", "Émotionnels", "Financiers uniquement"], correctAnswer: "Serviciels" },
+                        { question: "Un programme de fidélité qui propose des niveaux (tiers) avec des avantages croissants est basé sur un système de :", options: ["Cashback uniquement", "Statuts", "Points non convertibles", "Récompenses aléatoires"], correctAnswer: "Statuts" },
+                        { question: "La tendance de 'l'usage plutôt que la possession' en fidélisation vise principalement à :", options: ["Augmenter la marge brute sur chaque produit vendu", "Améliorer l'accessibilité du produit et créer une récurrence de la relation", "Réduire les coûts de production", "Limiter le nombre de clients pour offrir un service plus exclusif"], correctAnswer: "Améliorer l'accessibilité du produit et créer une récurrence de la relation" },
+                        { question: "L'organisation d'événements uniques et immersifs pour les clients, comme 'Sephoria' par Sephora, relève de la tendance :", options: ["De l'abonnement", "De la personnalisation via la data", "De l'expérientiel", "Du recentrage sur le positionnement de marque"], correctAnswer: "De l'expérientiel" },
+                        { question: "La tendance '2nde main / Recyclage' dans les programmes de fidélité permet notamment de :", options: ["Augmenter la production de neuf", "Capter une partie de la valeur du marché de la seconde main et créer un nouveau point de contact", "Se déresponsabiliser de la fin de vie des produits", "Communiquer uniquement sur des aspects écologiques sans actions concrètes"], correctAnswer: "Capter une partie de la valeur du marché de la seconde main et créer un nouveau point de contact" }
+                    ]
+                }
+            };
+            defaultCourseKeys = Object.keys(defaults); 
+            return defaults;
+        }
+
+        function loadCoursesFromLocalStorage() {
+            console.log("LOCAL_STORAGE_DEBUG: Attempting to load courses from localStorage.");
+            let storedCoursesRaw = null;
+            try {
+                storedCoursesRaw = localStorage.getItem(REVISION_APP_COURSES_KEY);
+                console.log("LOCAL_STORAGE_DEBUG: Raw data from localStorage:", storedCoursesRaw);
+            } catch (e) {
+                console.error("LOCAL_STORAGE_DEBUG: Error reading from localStorage:", e);
+                coursesData = getDefaultCourses();
+                saveCoursesToLocalStorage(); // Attempt to save defaults
+                return;
+            }
+
+            if (storedCoursesRaw) {
+                try {
+                    const parsedCourses = JSON.parse(storedCoursesRaw);
+                    console.log("LOCAL_STORAGE_DEBUG: Parsed courses from localStorage:", parsedCourses);
+                    
+                    if (typeof parsedCourses === 'object' && parsedCourses !== null && Object.keys(parsedCourses).length > 0) {
+                        coursesData = parsedCourses;
+                        console.log("LOCAL_STORAGE_DEBUG: Successfully loaded courses from localStorage.");
+                    } else {
+                        console.warn("LOCAL_STORAGE_DEBUG: localStorage contained invalid or empty courses object. Reverting to default. Parsed data:", parsedCourses);
+                        coursesData = getDefaultCourses();
+                        saveCoursesToLocalStorage(); 
+                    }
+                } catch (error) {
+                    console.error("LOCAL_STORAGE_DEBUG: Error parsing courses from localStorage. Reverting to default. Error:", error);
+                    coursesData = getDefaultCourses();
+                    saveCoursesToLocalStorage(); 
+                }
+            } else {
+                console.log("LOCAL_STORAGE_DEBUG: No courses found in localStorage. Initializing with defaults.");
+                coursesData = getDefaultCourses();
+                saveCoursesToLocalStorage(); 
+            }
+            console.log("LOCAL_STORAGE_DEBUG: Final coursesData after load:", coursesData);
+        }
+
+        function saveCoursesToLocalStorage() {
+            console.log("LOCAL_STORAGE_DEBUG: Attempting to save courses to localStorage. Data:", coursesData);
+            try {
+                const stringifiedData = JSON.stringify(coursesData);
+                localStorage.setItem(REVISION_APP_COURSES_KEY, stringifiedData);
+                console.log("LOCAL_STORAGE_DEBUG: Courses successfully saved to localStorage. Stringified data:", stringifiedData);
+            } catch (error) {
+                console.error("LOCAL_STORAGE_DEBUG: Error saving courses to localStorage:", error);
+                // Ensure addCourseFeedback exists before trying to set its properties
+                if (addCourseFeedback) { 
+                    addCourseFeedback.textContent = "Erreur : Impossible de sauvegarder les cours. Le stockage local est peut-être plein ou indisponible.";
+                    addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                    addCourseFeedback.classList.remove('hidden');
+                }
+            }
+        }
+
+
+        // --- Variables globales ---
+        let currentCourseKey = null;
+        let currentFlashcardIndex = 0;
+        let currentQcmIndex = 0;
+        let selectedQcmOption = null;
+
+        // --- Éléments du DOM ---
+        const mainTitle = document.getElementById('mainTitle');
+        const welcomeSection = document.getElementById('welcomeSection');
+        const defaultCourseListContainer = document.getElementById('defaultCourseListContainer');
+        const localCourseListContainer = document.getElementById('localCourseListContainer');
+        const noLocalCoursesMessage = document.getElementById('noLocalCoursesMessage');
+        const showAddCourseSectionBtn = document.getElementById('showAddCourseSectionBtn');
+        
+        const addCourseSection = document.getElementById('addCourseSection');
+        const newCourseNameInput = document.getElementById('newCourseName');
+        const addCoursePromptElement = document.getElementById('addCoursePrompt');
+        const copyPromptBtn = document.getElementById('copyPromptBtn');
+        const copyPromptFeedback = document.getElementById('copyPromptFeedback'); 
+        const newCourseDataTextarea = document.getElementById('newCourseData');
+        const saveCourseBtn = document.getElementById('saveCourseBtn');
+        const backToWelcomeFromAddBtn = document.getElementById('backToWelcomeFromAddBtn');
+        const addCourseFeedback = document.getElementById('addCourseFeedback'); // Defined here
+
+        const modeSelectionSection = document.getElementById('modeSelectionSection');
+        const modeSelectionTitle = document.getElementById('modeSelectionTitle');
+        
+        const showFlashcardsBtn = document.getElementById('showFlashcardsBtn');
+        const showQcmBtn = document.getElementById('showQcmBtn');
+        
+        const flashcardsSection = document.getElementById('flashcardsSection');
+        const flashcardElement = document.getElementById('flashcard'); 
+        const flashcardQuestion = document.getElementById('flashcardQuestion');
+        const flashcardAnswer = document.getElementById('flashcardAnswer');
+        const nextFlashcardBtn = document.getElementById('nextFlashcardBtn');
+        const flashcardMessage = document.getElementById('flashcardMessage');
+        const flashcardCounter = document.getElementById('flashcardCounter');
+
+        const qcmSection = document.getElementById('qcmSection');
+        const qcmQuestionElement = document.getElementById('qcmQuestionElement');
+        const qcmOptionsContainer = document.getElementById('qcmOptions');
+        const submitQcmBtn = document.getElementById('submitQcmBtn');
+        const nextQcmBtn = document.getElementById('nextQcmBtn');
+        const qcmFeedback = document.getElementById('qcmFeedback');
+        const qcmCounter = document.getElementById('qcmCounter');
+
+        const backToWelcomeFromModeBtn = document.getElementById('backToWelcomeFromModeBtn');
+        const backToModeSelectionFromFlashcardsBtn = document.getElementById('backToModeSelectionFromFlashcardsBtn');
+        const backToModeSelectionFromQcmBtn = document.getElementById('backToModeSelectionFromQcmBtn');
+        
+        const exportCoursesBtn = document.getElementById('exportCoursesBtn');
+        const importFile = document.getElementById('importFile');
+        const ioFeedback = document.getElementById('ioFeedback');
+
+
+        const GEMINI_PROMPT = `Bonjour Gemini, j'ai un cours que j'aimerais transformer en fiches de révision et QCM pour mon outil.
+
+Merci de générer à partir du contenu de cours que je vais vous fournir :
+1.  Une liste de cartes flash (questions concises et réponses directes).
+2.  Une liste de questions à choix multiples (QCM) avec 3 ou 4 options de réponse et une seule bonne réponse clairement identifiée.
+
+Veuillez fournir la sortie sous la forme d'un unique objet JSON valide, structuré exactement comme suit (ne modifiez pas les noms des clés) :
+{
+  "title": "METTRE ICI LE TITRE EXACT DU COURS FOURNI",
+  "flashcards": [
+    { "question": "Question pour la carte flash 1...", "answer": "Réponse pour la carte flash 1..." },
+    { "question": "Question pour la carte flash 2...", "answer": "Réponse pour la carte flash 2..." }
+  ],
+  "qcm": [
+    { "question": "Question QCM 1...", "options": ["Option A", "Option B", "Option C", "Option D (si applicable)"], "correctAnswer": "Option correcte pour QCM 1" },
+    { "question": "Question QCM 2...", "options": ["Option A", "Option B", "Option C"], "correctAnswer": "Option correcte pour QCM 2" }
+  ]
+}
+
+Le champ "title" doit être une chaîne de caractères.
+"flashcards" doit être un tableau d'objets, chaque objet ayant impérativement les clés "question" et "answer" (chaînes de caractères).
+"qcm" doit être un tableau d'objets, chaque objet ayant impérativement les clés "question" (chaîne), "options" (tableau de chaînes), et "correctAnswer" (chaîne de caractères).
+
+**Instruction importante pour les QCM :** La valeur du champ "correctAnswer" doit être une copie **exacte** de l'une des chaînes de caractères fournies dans le tableau "options" pour cette question. N'ajoutez aucun texte supplémentaire, marqueur de citation (comme "[cite: X]"), ou modification à la "correctAnswer" qui ne soit pas présent tel quel dans les "options".
+
+Voici le contenu de mon cours :
+[VEUILLEZ COLLER LE CONTENU INTÉGRAL DE VOTRE COURS ICI]`;
+
+        // --- Fonctions de navigation et d'affichage ---
+        function showWelcomeScreen() {
+            mainTitle.textContent = "Mon Outil de Révision";
+            welcomeSection.classList.remove('hidden');
+            addCourseSection.classList.add('hidden');
+            modeSelectionSection.classList.add('hidden');
+            flashcardsSection.classList.add('hidden');
+            qcmSection.classList.add('hidden');
+            currentCourseKey = null;
+            populateCourseList();
+        }
+
+        function showAddCourseScreen() {
+            mainTitle.textContent = "Ajouter un Nouveau Cours";
+            welcomeSection.classList.add('hidden');
+            addCourseSection.classList.remove('hidden');
+            modeSelectionSection.classList.add('hidden');
+            flashcardsSection.classList.add('hidden');
+            qcmSection.classList.add('hidden');
+            addCoursePromptElement.textContent = GEMINI_PROMPT;
+            newCourseNameInput.value = '';
+            newCourseDataTextarea.value = '';
+            addCourseFeedback.classList.add('hidden');
+            copyPromptFeedback.classList.add('hidden'); 
+        }
+        
+        function populateCourseList() {
+            defaultCourseListContainer.innerHTML = ''; 
+            localCourseListContainer.innerHTML = '';
+            let localCoursesExist = false;
+
+            if (defaultCourseKeys.length === 0 && coursesData) { // Ensure defaultCourseKeys is initialized
+                 const tempDefaults = getDefaultCourses(); // This will populate defaultCourseKeys
+            }
+
+
+            Object.keys(coursesData).forEach(key => {
+                const course = coursesData[key];
+                const buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('course-button-container');
+
+                const button = document.createElement('button');
+                button.dataset.course = key;
+                button.classList.add('course-btn', 'btn', 'text-white', 'font-semibold', 'py-2', 'px-4', 'rounded-lg', 'shadow-md');
+                
+                const colors = ['bg-sky-600 hover:bg-sky-700', 'bg-teal-600 hover:bg-teal-700', 'bg-indigo-600 hover:bg-indigo-700', 'bg-rose-600 hover:bg-rose-700', 'bg-amber-600 hover:bg-amber-700'];
+                const colorIndex = Object.keys(coursesData).indexOf(key) % colors.length; 
+                const colorClass = colors[colorIndex];
+                button.classList.add(...colorClass.split(' '));
+                button.textContent = course.title;
+                button.addEventListener('click', () => {
+                    currentCourseKey = button.dataset.course;
+                    currentFlashcardIndex = 0; 
+                    currentQcmIndex = 0;
+                    showModeSelectionScreen();
+                });
+                buttonContainer.appendChild(button);
+
+                if (!defaultCourseKeys.includes(key)) { 
+                    localCoursesExist = true;
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '&#x2715;'; 
+                    deleteBtn.classList.add('delete-course-btn');
+                    deleteBtn.title = `Supprimer le cours "${course.title}"`;
+                    deleteBtn.addEventListener('click', (event) => {
+                        event.stopPropagation(); 
+                        deleteCourse(key, course.title);
+                    });
+                    buttonContainer.appendChild(deleteBtn);
+                    localCourseListContainer.appendChild(buttonContainer);
+                } else {
+                    defaultCourseListContainer.appendChild(buttonContainer);
+                }
+            });
+
+            if (localCoursesExist) {
+                noLocalCoursesMessage.classList.add('hidden');
+            } else {
+                noLocalCoursesMessage.classList.remove('hidden');
+            }
+        }
+        
+        function deleteCourse(courseKey, courseTitle) {
+            console.log(`LOCAL_STORAGE_DEBUG: Deleting course. Key: ${courseKey}, Title: ${courseTitle}`);
+            delete coursesData[courseKey];
+            saveCoursesToLocalStorage();
+            populateCourseList(); 
+            console.log(`LOCAL_STORAGE_DEBUG: Course "${courseTitle}" deleted.`);
+        }
+
+
+        function showModeSelectionScreen() {
+            if (!currentCourseKey || !coursesData[currentCourseKey]) { 
+                 console.error("LOCAL_STORAGE_DEBUG: Attempting to access non-existent course:", currentCourseKey);
+                 showWelcomeScreen(); 
+                 return;
+            }
+            mainTitle.textContent = `Révision : ${coursesData[currentCourseKey].title}`;
+            modeSelectionTitle.textContent = `Cours : ${coursesData[currentCourseKey].title}. Choisissez un mode :`;
+            welcomeSection.classList.add('hidden');
+            addCourseSection.classList.add('hidden');
+            modeSelectionSection.classList.remove('hidden');
+            flashcardsSection.classList.add('hidden');
+            qcmSection.classList.add('hidden');
+        }
+
+        function showFlashcardsScreen() {
+            if (!currentCourseKey || !coursesData[currentCourseKey]) { showWelcomeScreen(); return; }
+            mainTitle.textContent = `Cartes Flash : ${coursesData[currentCourseKey].title}`;
+            modeSelectionSection.classList.add('hidden');
+            flashcardsSection.classList.remove('hidden');
+            qcmSection.classList.add('hidden');
+            displayFlashcard();
+        }
+
+        function showQcmScreen() {
+            if (!currentCourseKey || !coursesData[currentCourseKey]) { showWelcomeScreen(); return; }
+            mainTitle.textContent = `QCM : ${coursesData[currentCourseKey].title}`;
+            modeSelectionSection.classList.add('hidden');
+            flashcardsSection.classList.add('hidden');
+            qcmSection.classList.remove('hidden');
+            displayQcm();
+        }
+        
+        function displayFlashcard() {
+            if (!coursesData[currentCourseKey] || !coursesData[currentCourseKey].flashcards) { 
+                flashcardQuestion.textContent = "Erreur : Données de flashcards non trouvées pour ce cours.";
+                flashcardElement.classList.add('hidden');
+                nextFlashcardBtn.classList.add('hidden');
+                flashcardCounter.textContent = "0/0";
+                return;
+            }
+            const courseFlashcards = coursesData[currentCourseKey].flashcards;
+            if (courseFlashcards.length === 0) { 
+                flashcardQuestion.textContent = "Aucune carte flash disponible pour ce cours.";
+                flashcardAnswer.textContent = "";
+                flashcardMessage.textContent = "Ajoutez des données ou vérifiez le format.";
+                nextFlashcardBtn.classList.add('hidden');
+                flashcardElement.classList.add('hidden');
+                flashcardCounter.textContent = "0/0";
+                return;
+            }
+            flashcardElement.classList.remove('hidden');
+            nextFlashcardBtn.classList.remove('hidden');
+            
+            const currentCard = courseFlashcards[currentFlashcardIndex];
+            flashcardQuestion.textContent = currentCard.question;
+            flashcardAnswer.textContent = currentCard.answer;
+            flashcardElement.classList.remove('is-flipped');
+            flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
+            flashcardCounter.textContent = `${currentFlashcardIndex + 1}/${courseFlashcards.length}`;
+        }
+
+        function flipFlashcard() {
+            if (!currentCourseKey || !coursesData[currentCourseKey] || !coursesData[currentCourseKey].flashcards || coursesData[currentCourseKey].flashcards.length === 0) return;
+            flashcardElement.classList.toggle('is-flipped');
+             if (flashcardElement.classList.contains('is-flipped')) {
+                flashcardMessage.textContent = "Cliquez sur la carte pour voir la question.";
+            } else {
+                flashcardMessage.textContent = "Cliquez sur la carte pour voir la réponse.";
+            }
+        }
+
+        function nextFlashcard() {
+            const courseFlashcards = coursesData[currentCourseKey].flashcards;
+            if (!courseFlashcards || courseFlashcards.length === 0) return;
+            currentFlashcardIndex = (currentFlashcardIndex + 1) % courseFlashcards.length;
+            displayFlashcard();
+        }
+
+        function displayQcm() {
+             if (!coursesData[currentCourseKey] || !coursesData[currentCourseKey].qcm) { 
+                qcmQuestionElement.textContent = "Erreur : Données de QCM non trouvées pour ce cours.";
+                qcmOptionsContainer.innerHTML = "";
+                submitQcmBtn.classList.add('hidden');
+                nextQcmBtn.classList.add('hidden');
+                qcmCounter.textContent = "0/0";
+                return;
+            }
+            const courseQCMs = coursesData[currentCourseKey].qcm;
+            if (courseQCMs.length === 0) { 
+                qcmQuestionElement.textContent = "Aucun QCM disponible pour ce cours.";
+                qcmOptionsContainer.innerHTML = "";
+                submitQcmBtn.classList.add('hidden');
+                nextQcmBtn.classList.add('hidden');
+                qcmFeedback.classList.add('hidden');
+                qcmCounter.textContent = "0/0";
+                return;
+            }
+
+            submitQcmBtn.classList.remove('hidden');
+            nextQcmBtn.classList.add('hidden');
+            qcmFeedback.classList.add('hidden');
+            qcmFeedback.textContent = '';
+            qcmFeedback.className = 'feedback-message hidden';
+
+            const currentQ = courseQCMs[currentQcmIndex];
+            qcmQuestionElement.textContent = currentQ.question;
+            qcmOptionsContainer.innerHTML = ''; 
+            qcmCounter.textContent = `${currentQcmIndex + 1}/${courseQCMs.length}`;
+
+            currentQ.options.forEach(option => {
+                const optionId = `qcm-option-${option.replace(/\s+/g, '-').replace(/[^\w-]/g, '')}`;
+                const div = document.createElement('div');
+                div.classList.add('qcm-option', 'p-3', 'bg-white', 'rounded-lg', 'border', 'border-gray-300', 'cursor-pointer', 'hover:bg-gray-100');
+                
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'qcmOption';
+                input.value = option;
+                input.id = optionId; 
+                input.classList.add('mr-3', 'accent-blue-500');
+
+                const label = document.createElement('label');
+                label.htmlFor = optionId;
+                label.textContent = option;
+                label.classList.add('text-gray-700', 'w-full', 'cursor-pointer');
+
+                div.appendChild(input);
+                div.appendChild(label);
+                
+                div.addEventListener('click', () => {
+                    document.querySelectorAll('#qcmOptions > div').forEach(d => d.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50'));
+                    div.classList.add('ring-2', 'ring-blue-500', 'bg-blue-50');
+                    input.checked = true; 
+                    selectedQcmOption = option;
+                    submitQcmBtn.disabled = false; 
+                });
+                qcmOptionsContainer.appendChild(div);
+            });
+            selectedQcmOption = null; 
+            submitQcmBtn.disabled = true; 
+        }
+
+        function submitQcm() {
+            if (selectedQcmOption === null) {
+                qcmFeedback.textContent = "Veuillez sélectionner une réponse.";
+                qcmFeedback.className = 'feedback-message feedback-incorrect';
+                qcmFeedback.classList.remove('hidden');
+                return;
+            }
+
+            const currentQ = coursesData[currentCourseKey].qcm[currentQcmIndex];
+            const isCorrect = selectedQcmOption === currentQ.correctAnswer;
+
+            qcmFeedback.classList.remove('hidden');
+            if (isCorrect) {
+                qcmFeedback.textContent = "Bonne réponse !";
+                qcmFeedback.className = 'feedback-message feedback-correct';
+            } else {
+                qcmFeedback.textContent = `Mauvaise réponse. La bonne réponse était : ${currentQ.correctAnswer}`;
+                qcmFeedback.className = 'feedback-message feedback-incorrect';
+            }
+
+            const optionsDivs = qcmOptionsContainer.querySelectorAll('div');
+            optionsDivs.forEach(div => {
+                const input = div.querySelector('input');
+                div.classList.remove('ring-2', 'ring-blue-500', 'bg-blue-50'); 
+                div.style.pointerEvents = 'none'; 
+
+                if (input.value === currentQ.correctAnswer) {
+                    div.classList.add('correct-answer');
+                } else if (input.value === selectedQcmOption && !isCorrect) {
+                    div.classList.add('incorrect-answer');
+                }
+            });
+
+            submitQcmBtn.classList.add('hidden'); 
+            nextQcmBtn.classList.remove('hidden'); 
+        }
+
+        function nextQcm() {
+            const courseQCMs = coursesData[currentCourseKey].qcm;
+            if (!courseQCMs || courseQCMs.length === 0) return;
+            currentQcmIndex = (currentQcmIndex + 1) % courseQCMs.length;
+            displayQcm();
+            submitQcmBtn.classList.remove('hidden'); 
+            nextQcmBtn.classList.add('hidden'); 
+            qcmFeedback.classList.add('hidden'); 
+            
+            const optionsDivs = qcmOptionsContainer.querySelectorAll('div');
+            optionsDivs.forEach(div => {
+                div.style.pointerEvents = 'auto';
+            });
+        }
+
+        function saveNewCourse() {
+            const courseName = newCourseNameInput.value.trim();
+            const courseDataJSON = newCourseDataTextarea.value.trim();
+            addCourseFeedback.classList.add('hidden');
+
+            if (!courseName) {
+                addCourseFeedback.textContent = "Veuillez donner un nom à votre cours.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            if (!courseDataJSON) {
+                addCourseFeedback.textContent = "Veuillez coller les données JSON générées.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            let newCourseContent;
+            try {
+                newCourseContent = JSON.parse(courseDataJSON);
+            } catch (error) {
+                addCourseFeedback.textContent = "Erreur : Le format JSON est invalide. Veuillez vérifier les données collées.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                console.error("LOCAL_STORAGE_DEBUG: Error parsing JSON from textarea:", error);
+                return;
+            }
+
+            if (!newCourseContent.title || typeof newCourseContent.title !== 'string' ||
+                !Array.isArray(newCourseContent.flashcards) || 
+                !Array.isArray(newCourseContent.qcm)) {
+                addCourseFeedback.textContent = "Erreur : La structure du JSON est incorrecte. Il doit contenir 'title', 'flashcards' (tableau), et 'qcm' (tableau).";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+            
+            const flashcardsValid = newCourseContent.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
+            
+            const qcmValid = newCourseContent.qcm.every(q => {
+                if (typeof q.question !== 'string' || !Array.isArray(q.options) || typeof q.correctAnswer !== 'string') {
+                    return false;
+                }
+                const cleanedCorrectAnswer = q.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();
+                return q.options.includes(cleanedCorrectAnswer);
+            });
+
+            if (!flashcardsValid || !qcmValid) {
+                 addCourseFeedback.textContent = "Erreur : La structure des flashcards ou des QCM dans le JSON est incorrecte. Vérifiez les clés, les types de données, et que correctAnswer (après nettoyage des citations) correspond exactement à l'une des options.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            const courseKey = courseName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+            
+            coursesData[courseKey] = {
+                title: courseName, 
+                flashcards: newCourseContent.flashcards,
+                qcm: newCourseContent.qcm 
+            };
+            
+            saveCoursesToLocalStorage(); 
+
+            addCourseFeedback.textContent = `Le cours "${courseName}" a été ajouté avec succès !`;
+            addCourseFeedback.className = 'feedback-message feedback-correct';
+            addCourseFeedback.classList.remove('hidden');
+            
+            newCourseNameInput.value = ''; 
+            newCourseDataTextarea.value = '';
+
+            setTimeout(() => {
+                showWelcomeScreen();
+            }, 2000);
+        }
+
+        function exportCourses() {
+            try {
+                const jsonData = JSON.stringify(coursesData, null, 2); // null, 2 for pretty printing
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mes_cours_revision.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                ioFeedback.textContent = "Cours exportés avec succès !";
+                ioFeedback.style.color = "green";
+            } catch (error) {
+                console.error("LOCAL_STORAGE_DEBUG: Error exporting courses:", error);
+                ioFeedback.textContent = "Erreur lors de l'exportation des cours.";
+                ioFeedback.style.color = "red";
+            }
+            setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+        }
+
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            if (file.type !== "application/json") {
+                ioFeedback.textContent = "Erreur : Veuillez sélectionner un fichier JSON.";
+                ioFeedback.style.color = "red";
+                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                importFile.value = ''; // Reset file input
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let importedCourses;
+                try {
+                    importedCourses = JSON.parse(e.target.result);
+                } catch (error) {
+                    console.error("LOCAL_STORAGE_DEBUG: Error parsing imported JSON:", error);
+                    ioFeedback.textContent = "Erreur : Le fichier JSON importé est invalide.";
+                    ioFeedback.style.color = "red";
+                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                    importFile.value = ''; // Reset file input
+                    return;
+                }
+
+                if (typeof importedCourses !== 'object' || importedCourses === null) {
+                    ioFeedback.textContent = "Erreur : Le fichier JSON importé n'a pas la structure attendue (objet de cours).";
+                    ioFeedback.style.color = "red";
+                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                    importFile.value = ''; // Reset file input
+                    return;
+                }
+                
+                let coursesAddedCount = 0;
+                let coursesUpdatedCount = 0;
+
+                for (const key in importedCourses) {
+                    if (Object.hasOwnProperty.call(importedCourses, key)) {
+                        const course = importedCourses[key];
+                        // Basic validation for each imported course structure
+                        if (course && typeof course.title === 'string' && Array.isArray(course.flashcards) && Array.isArray(course.qcm)) {
+                            if (!defaultCourseKeys.includes(key)) { // Do not overwrite default courses by key
+                                if (coursesData[key]) {
+                                    coursesUpdatedCount++;
+                                } else {
+                                    coursesAddedCount++;
+                                }
+                                coursesData[key] = course;
+                            } else {
+                                console.warn(`LOCAL_STORAGE_DEBUG: Tentative d'importation d'un cours avec une clé réservée ('${key}'). Ce cours a été ignoré pour préserver les cours par défaut.`);
+                            }
+                        } else {
+                            console.warn(`LOCAL_STORAGE_DEBUG: Cours importé avec la clé '${key}' a une structure invalide et a été ignoré.`);
+                        }
+                    }
+                }
+                
+                saveCoursesToLocalStorage();
+                populateCourseList();
+                ioFeedback.textContent = `${coursesAddedCount} cours ajoutés, ${coursesUpdatedCount} cours mis à jour. Les cours par défaut n'ont pas été modifiés.`;
+                ioFeedback.style.color = "green";
+                setTimeout(() => { ioFeedback.textContent = ''; }, 5000);
+                importFile.value = ''; // Reset file input
+            };
+            reader.readAsText(file);
+        }
+
+
+        // --- Écouteurs d'événements ---
+        showAddCourseSectionBtn.addEventListener('click', showAddCourseScreen);
+        saveCourseBtn.addEventListener('click', saveNewCourse);
+        backToWelcomeFromAddBtn.addEventListener('click', showWelcomeScreen);
+        
+        copyPromptBtn.addEventListener('click', () => {
+            const textToCopy = GEMINI_PROMPT;
+            copyPromptFeedback.classList.add('hidden'); 
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        copyPromptFeedback.textContent = "Copié !";
+                        copyPromptFeedback.style.color = "green";
+                        copyPromptFeedback.classList.remove('hidden');
+                        setTimeout(() => { copyPromptFeedback.classList.add('hidden'); }, 2000);
+                    })
+                    .catch(err => {
+                        console.warn("LOCAL_STORAGE_DEBUG: navigator.clipboard.writeText a échoué, tentative de fallback: ", err);
+                        fallbackCopyTextToClipboard(textToCopy);
+                    });
+            } else {
+                console.warn("LOCAL_STORAGE_DEBUG: navigator.clipboard non disponible, tentative de fallback.");
+                fallbackCopyTextToClipboard(textToCopy);
+            }
+        });
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    copyPromptFeedback.textContent = "Copié (fallback) !";
+                    copyPromptFeedback.style.color = "green";
+                } else {
+                    copyPromptFeedback.textContent = "Échec de la copie. Veuillez copier manuellement.";
+                    copyPromptFeedback.style.color = "red";
+                }
+            } catch (err) {
+                console.error("LOCAL_STORAGE_DEBUG: Erreur du fallback de copie: ", err);
+                copyPromptFeedback.textContent = "Échec de la copie. Veuillez copier manuellement.";
+                copyPromptFeedback.style.color = "red";
+            }
+            copyPromptFeedback.classList.remove('hidden');
+            setTimeout(() => { copyPromptFeedback.classList.add('hidden'); }, 3000);
+
+            document.body.removeChild(textArea);
+        }
+
+
+        showFlashcardsBtn.addEventListener('click', showFlashcardsScreen);
+        showQcmBtn.addEventListener('click', showQcmScreen);
+
+        flashcardElement.addEventListener('click', flipFlashcard); 
+        nextFlashcardBtn.addEventListener('click', nextFlashcard);
+
+        submitQcmBtn.addEventListener('click', submitQcm);
+        nextQcmBtn.addEventListener('click', nextQcm);
+
+        backToWelcomeFromModeBtn.addEventListener('click', showWelcomeScreen);
+        backToModeSelectionFromFlashcardsBtn.addEventListener('click', showModeSelectionScreen);
+        backToModeSelectionFromQcmBtn.addEventListener('click', showModeSelectionScreen);
+
+        exportCoursesBtn.addEventListener('click', exportCourses);
+        importFile.addEventListener('change', handleImportFile);
+
+        // --- Initialisation ---
+        loadCoursesFromLocalStorage(); 
+        showWelcomeScreen(); 
+    </script>
+</body>
+</html>
