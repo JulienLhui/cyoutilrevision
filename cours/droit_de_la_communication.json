@@ -1,0 +1,115 @@
+{
+  "title": "Droit de la communication",
+  "flashcards": [
+    {
+      "question": "Quels sont les trois secteurs/collèges de l'ARPP ?",
+      "answer": "CEP (Conseil Ethique de la Publicité), JDP (Jury Déontologique de la Publicité), CPP (Conseil Paritaire de la Publicité)"
+    },
+    {
+      "question": "Quels sont les trois avis que l'ARPP peut donner sur une publicité TV ?",
+      "answer": "Favorable, À modifier, Ne pas visionner"
+    },
+    {
+      "question": "Cite deux associations de consommateurs mentionnées dans le texte.",
+      "answer": "Que choisir & 60M de consommateurs"
+    },
+    {
+      "question": "Quels sont les quatre droits des consommateurs mentionnés dans le texte ?",
+      "answer": "Droit à la sécurité, Droit à l’information, Droit à la protection contre les pubs sauvages ou abusives ou forcées, Droit à l’action civile"
+    },
+    {
+      "question": "Quels sont les trois éléments obligatoires qu'un contrat doit indiquer, selon le texte?",
+      "answer": "La nature de la mission, La prestation à fournir par l’agence, Le calendrier prévisionnel, La rémunération et les modalités"
+    },
+    {
+      "question": "Quel est l'objectif principal de la loi Sapin de 1993 ?",
+      "answer": "Le contrat de mandat au nom et pour le titre des annonceurs (Agences = Annonceurs)"
+    },
+    {
+      "question": "Quel est l'organisme qui visionne et contrôle toutes les publicités TV ?",
+      "answer": "L'ARPP (Autorité de Régulation Professionnelle de la Publicité)"
+    },
+    {
+      "question": "Quel est le nom de la loi qui impose l'utilisation de la langue française dans la publicité ?",
+      "answer": "Loi Toubon"
+    },
+    {
+      "question": "Quelle mention doit figurer si une image a été retouchée ?",
+      "answer": "Mentionner que l’image a été retouchée si retouche des modèles par Photoshop"
+    }
+  ],
+  "qcm": [
+    {
+      "question": "Quel organisme s'occupe de l'audiovisuel et du numérique ?",
+      "options": [
+        "CNIL",
+        "ARCOM",
+        "ACPM"
+      ],
+      "correctAnswer": "ARCOM"
+    },
+    {
+      "question": "Quelle loi encadre la publicité sur l'alcool ?",
+      "options": [
+        "Loi Toubon",
+        "Loi Evin",
+        "Loi Sapin"
+      ],
+      "correctAnswer": "Loi Evin"
+    },
+    {
+      "question": "Parmi les propositions suivantes, laquelle est une règle juridique concernant la publicité ?",
+      "options": [
+        "La publicité doit être divertissante",
+        "Identification de l’annonceur",
+        "La publicité doit être en couleur"
+      ],
+      "correctAnswer": "Identification de l’annonceur"
+    },
+    {
+      "question": "Dans le cadre des droits d'auteur, quel type d'image est payant et permet une utilisation sans restriction ?",
+      "options": [
+        "Images libres",
+        "Images libres de droit",
+        "Images en droits gérés"
+      ],
+      "correctAnswer": "Images libres de droit"
+    },
+    {
+      "question": "Selon le texte, quelle est l'une des obligations pour les marchés publics au-delà de 40 000€ ?",
+      "options": [
+        "Réaliser un appel d’offre + publicité de l’appel d’offre + cahier des charges",
+        "Utiliser uniquement des agences locales",
+        "Privilégier les entreprises ayant une certification RSE"
+      ],
+      "correctAnswer": "Réaliser un appel d’offre + publicité de l’appel d’offre + cahier des charges"
+    },
+    {
+      "question": "Quel est le rôle de l'ARPP ?",
+      "options": [
+        "Défendre les droits des consommateurs",
+        "Autorité de Régulation Professionnelle de la Publicité",
+        "Protéger les données personnelles"
+      ],
+      "correctAnswer": "Autorité de Régulation Professionnelle de la Publicité"
+    },
+    {
+      "question": "Quelle est l'une des phrases obligatoires à inclure dans les publicités alimentaires ?",
+      "options": [
+        "Manger 5 fruits & légumes par jour",
+        "Consommer avec modération",
+        "Ce produit est bon pour la santé"
+      ],
+      "correctAnswer": "Manger 5 fruits & légumes par jour"
+    },
+    {
+      "question": "Quelle interdiction concernant la publicité est mentionnée dans le texte ?",
+      "options": [
+        "D’inciter à des comportements violents…   Faire preuve de bon sens.",
+        "D'utiliser des influenceurs",
+        "D'utiliser des images en noir et blanc"
+      ],
+      "correctAnswer": "D’inciter à des comportements violents…   Faire preuve de bon sens."
+    }
+  ]
+}
