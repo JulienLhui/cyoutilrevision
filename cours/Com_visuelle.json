@@ -1,0 +1,94 @@
+{
+  "title": "Communication visuelle",
+  "flashcards": [
+    {
+      "question": "Qu'est-ce qu'un 'chemin de fer' dans le contexte de l'impression ?",
+      "answer": "C'est une sorte de schéma qui permet de savoir ce que je mets sur chaque page."
+    },
+    {
+      "question": "Quels sont des exemples de papiers non-couchés ?",
+      "answer": "Le papier journal, pour l’édition de catalogues, tracts promotionnels, livre de poche."
+    },
+    {
+      "question": "Quels sont les trois types de finition de papier couché ?",
+      "answer": "Mat, Satiné, Brillant."
+    },
+    {
+      "question": "Que signifie le grammage du papier ?",
+      "answer": "Poids au m²."
+    },
+    {
+      "question": "Quels sont les labels écologiques associés au papier ?",
+      "answer": "Ecolabel, FSC, PEFC."
+    },
+    {
+      "question": "Quelle est la différence entre la synthèse additive et la synthèse soustractive en couleur ?",
+      "answer": "Synthèse additive = RVB = Blanc, Synthèse soustractive = CMJN / CMYK = Noir."
+    },
+    {
+      "question": "Pour quels types de tirages l'impression offset est-elle recommandée ?",
+      "answer": "Pour le respect des couleurs et les tirages > à 1000 ex."
+    },
+    {
+      "question": "Quelles sont les trois grandes étapes de la chaîne graphique ?",
+      "answer": "La préparation, la conception, la fabrication."
+    }
+  ],
+  "qcm": [
+    {
+      "question": "Quel format est un exemple de format ouvert/fermé ?",
+      "options": [
+        "A0 = 2xA2",
+        "A0 = 2xA1 = 4xA3",
+        "A0 = 2xA1 = 4xA2 = 8xA3 = 16xA4"
+      ],
+      "correctAnswer": "A0 = 2xA1 = 4xA2 = 8xA3 = 16xA4"
+    },
+    {
+      "question": "Quelle proposition décrit le mieux le papier couché ?",
+      "options": [
+        "Papier non traité, absorbant beaucoup l'encre.",
+        "Papier traité en surface, offrant un meilleur rendu des couleurs.",
+        "Papier utilisé pour les journaux avec un aspect granulé."
+      ],
+      "correctAnswer": "Papier traité en surface, offrant un meilleur rendu des couleurs."
+    },
+    {
+      "question": "Lequel de ces grammages de papier est typiquement associé à une invitation haut de gamme ?",
+      "options": [
+        "70-80g",
+        "130-250g",
+        "350g /m²"
+      ],
+      "correctAnswer": "350g /m²"
+    },
+    {
+      "question": "Quel label certifie l'imprimeur et non le papier ?",
+      "options": [
+        "Ecolabel",
+        "FSC",
+        "PEFC",
+        "Label  imprim’ vert"
+      ],
+      "correctAnswer": "Label  imprim’ vert"
+    },
+    {
+      "question": "Quelle méthode d'impression est privilégiée pour les tirages de plus de 250 000 exemplaires ?",
+      "options": [
+        "Offset",
+        "Héliogravure",
+        "Numérique"
+      ],
+      "correctAnswer": "Héliogravure"
+    },
+    {
+      "question": "Quelle est la dernière étape de la chaîne graphique ?",
+      "options": [
+        "La préparation",
+        "La conception",
+        "La fabrication"
+      ],
+      "correctAnswer": "La fabrication"
+    }
+  ]
+}

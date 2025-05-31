@@ -1,0 +1,287 @@
+{
+  "title": "Relation Client",
+  "flashcards": [
+    {
+      "question": "Définition de la Fidélisation B2C (point de vue entreprise) ?",
+      "answer": "Stratégie et actions déployées pour développer une relation avec ses clients dans la durée, visant à générer des réachats."
+    },
+    {
+      "question": "Quelle est la métaphore illustrant la relation acquisition vs. fidélisation ?",
+      "answer": "La métaphore de la baignoire (acquisition = flux entrant, fidélisation = stock, churn = flux sortant)."
+    },
+    {
+      "question": "Principal enjeu économique de la fidélisation par rapport à l'acquisition ?",
+      "answer": "Le coût d’acquisition d'un nouveau client est supérieur (environ 5 fois plus cher) au coût de fidélisation d’un client existant."
+    },
+    {
+      "question": "Différence entre Fidélisation et Fidélité ?",
+      "answer": "Fidélisation = stratégie de l'entreprise. Fidélité = réponse du client (ré-achat)."
+    },
+    {
+      "question": "Qu'est-ce que la fidélité induite (ou forcée) ?",
+      "answer": "Le client n'a pas vraiment le choix (monopole, engagement contractuel, absence d'alternative)."
+    },
+    {
+      "question": "Qu'est-ce que la fidélité comportementale (ou par défaut/passive) ?",
+      "answer": "Le client achète par habitude, praticité ou rationalité (prix), sans préférence marquée."
+    },
+    {
+      "question": "Qu'est-ce que la fidélité attitudinale (ou acquise/vraie fidélité) ?",
+      "answer": "Le client a une attitude positive et un engagement réel envers la marque (engagement temporel, émotionnel)."
+    },
+    {
+      "question": "Qu'est-ce que le taux de churn (ou attrition) ?",
+      "answer": "Le taux de clients perdus sur une période donnée."
+    },
+    {
+      "question": "Qu'est-ce que l'ARPU ?",
+      "answer": "Average Revenue Per User (Dépense moyenne par utilisateur/client sur une période)."
+    },
+    {
+      "question": "Citez les 3 enjeux de la Connaissance Client.",
+      "answer": "COLLECTER, ORGANISER, EXPLOITER les données."
+    },
+    {
+      "question": "Qu'est-ce que la Zero Party Data ?",
+      "answer": "Données fournies volontairement et explicitement par le client (fiabilité très forte)."
+    },
+    {
+      "question": "Qu'est-ce que la méthode RFM ?",
+      "answer": "Méthode de segmentation basée sur la Récence, la Fréquence et le Montant des achats."
+    },
+    {
+      "question": "Citez un objectif principal d'un programme de fidélité.",
+      "answer": "Collecter les données clients / Collecter les données de vente / Développer la Customer Life Time Value."
+    },
+    {
+      "question": "Quels sont les 3 types d'avantages typiques d'un programme de fidélité ?",
+      "answer": "Transactionnels (earn/burn), Serviciels (livraison offerte), Émotionnels (cadeau d'anniversaire)."
+    },
+    {
+      "question": "Quelle tendance actuelle en fidélisation est illustrée par Darty Max ?",
+      "answer": "L'abonnement."
+    }
+  ],
+  "qcm": [
+    {
+      "question": "Recruter un nouveau client coûte généralement combien de fois plus cher que de fidéliser un client existant (selon Dawkins & Reichheld) ?",
+      "options": [
+        "2 fois",
+        "3 fois",
+        "5 fois",
+        "10 fois"
+      ],
+      "correctAnswer": "5 fois"
+    },
+    {
+      "question": "Dans la métaphore de la baignoire, que représente le 'churn' ?",
+      "options": [
+        "Le flux entrant de nouveaux clients",
+        "Le stock de clients (re)acheteurs",
+        "Le flux sortant des clients perdus",
+        "La taille totale de la base clients"
+      ],
+      "correctAnswer": "Le flux sortant des clients perdus"
+    },
+    {
+      "question": "Lequel de ces éléments N'EST PAS un pré-requis indispensable à la mise en place d’une stratégie de fidélisation efficace ?",
+      "options": [
+        "Une relation durable peut être établie",
+        "Il est possible d'identifier les clients et de les suivre",
+        "L'entreprise opère dans un secteur de luxe",
+        "Tous les axes du mix marketing sont travaillés"
+      ],
+      "correctAnswer": "L'entreprise opère dans un secteur de luxe"
+    },
+    {
+      "question": "Laquelle de ces affirmations distingue correctement satisfaction et fidélisation ?",
+      "options": [
+        "Un client fidèle est toujours satisfait",
+        "Un client satisfait est toujours fidèle",
+        "Un client fidèle peut ne pas être satisfait, et vice-versa",
+        "Satisfaction et fidélisation sont synonymes"
+      ],
+      "correctAnswer": "Un client fidèle peut ne pas être satisfait, et vice-versa"
+    },
+    {
+      "question": "Laquelle de ces situations correspond à une fidélité 'forcée' (ou induite) ?",
+      "options": [
+        "Client choisissant une marque par préférence émotionnelle",
+        "Client achetant le produit le moins cher par calcul",
+        "Client utilisant un service de VoD pour ses contenus exclusifs, faute d'alternative similaire",
+        "Client achetant par habitude sans y penser"
+      ],
+      "correctAnswer": "Client utilisant un service de VoD pour ses contenus exclusifs, faute d'alternative similaire"
+    },
+    {
+      "question": "Un client qui achète toujours son pain dans la même boulangerie par praticité (proximité) sans y être particulièrement attaché illustre une fidélité :",
+      "options": [
+        "Forcée",
+        "Par défaut (passive/par inertie)",
+        "Acquise (vraie fidélité)",
+        "Contractuelle"
+      ],
+      "correctAnswer": "Par défaut (passive/par inertie)"
+    },
+    {
+      "question": "La 'vraie fidélité' selon Oliver (1997) se caractérise par :",
+      "options": [
+        "Un simple réachat occasionnel",
+        "Un engagement profond poussant au ré-achat malgré les influences externes",
+        "Une contrainte contractuelle forte",
+        "Uniquement une question de prix bas"
+      ],
+      "correctAnswer": "Un engagement profond poussant au ré-achat malgré les influences externes"
+    },
+    {
+      "question": "Quel indicateur mesure la proportion de clients ayant réalisé au moins un achat sur une période donnée ?",
+      "options": [
+        "Fréquence d’achat",
+        "Taux d’activité / MAU",
+        "Panier moyen",
+        "Taux de churn"
+      ],
+      "correctAnswer": "Taux d’activité / MAU"
+    },
+    {
+      "question": "L'ARPU (Average Revenue Per User) est un indicateur de :",
+      "options": [
+        "Flux clients",
+        "Activité clients",
+        "Valeur clients",
+        "Satisfaction clients"
+      ],
+      "correctAnswer": "Valeur clients"
+    },
+    {
+      "question": "Le 'Share of Wallet' (ou taux de nourriture) mesure :",
+      "options": [
+        "Le nombre total de clients d'une entreprise",
+        "La part des dépenses d'un client consacrée à l'entreprise dans une catégorie de produits/services",
+        "Le coût d'acquisition d'un nouveau client",
+        "Le temps moyen entre deux achats"
+      ],
+      "correctAnswer": "La part des dépenses d'un client consacrée à l'entreprise dans une catégorie de produits/services"
+    },
+    {
+      "question": "Quel type de données client a la durée de vie la plus COURTE et s'obsolète rapidement ?",
+      "options": [
+        "Socio Démographiques (âge, genre)",
+        "Transactionnelles (historique d'achats)",
+        "Comportementales (traces digitales, navigation web)",
+        "Relationnelles (avis, échanges service client)"
+      ],
+      "correctAnswer": "Comportementales (traces digitales, navigation web)"
+    },
+    {
+      "question": "Les données que vous collectez directement via votre site web ou votre application (ex: historique d'achats) sont des :",
+      "options": [
+        "Zero Party Data",
+        "First Party Data",
+        "Second Party Data",
+        "Third Party Data"
+      ],
+      "correctAnswer": "First Party Data"
+    },
+    {
+      "question": "Un Data Warehouse (DWH) stocke typiquement :",
+      "options": [
+        "Uniquement des données brutes non structurées",
+        "Des données structurées, prétraitées et organisées via un processus ETL",
+        "Des données provenant exclusivement des réseaux sociaux",
+        "Des données temporaires pour des analyses ponctuelles"
+      ],
+      "correctAnswer": "Des données structurées, prétraitées et organisées via un processus ETL"
+    },
+    {
+      "question": "Le RGPD (Règlement Général sur la Protection des Données) impose notamment :",
+      "options": [
+        "La collecte de données sans consentement si elles sont anonymisées",
+        "Le consentement explicite pour la collecte de données personnelles et garantit des droits aux clients",
+        "L'interdiction totale de collecter des données comportementales",
+        "Une amende maximale de 1% du CA mondial en cas de non-conformité"
+      ],
+      "correctAnswer": "Le consentement explicite pour la collecte de données personnelles et garantit des droits aux clients"
+    },
+    {
+      "question": "La méthode RFM est une technique de :",
+      "options": [
+        "Calcul du ROI d'une campagne marketing",
+        "Segmentation client basée sur la Récence, la Fréquence et le Montant des achats",
+        "Mesure de la satisfaction client (Net Promoter Score)",
+        "Prédiction du taux de churn à l'aide de l'intelligence artificielle"
+      ],
+      "correctAnswer": "Segmentation client basée sur la Récence, la Fréquence et le Montant des achats"
+    },
+    {
+      "question": "Attribuer une note à chaque client en fonction de sa propension à avoir un comportement futur (ex: résiliation) est appelé :",
+      "options": [
+        "Segmentation",
+        "Ciblage",
+        "Scoring",
+        "Monétisation"
+      ],
+      "correctAnswer": "Scoring"
+    },
+    {
+      "question": "Lequel de ces éléments N'EST PAS un des trois objectifs/challenges principaux d'un programme de fidélité ?",
+      "options": [
+        "Collecter les données clients",
+        "Augmenter le coût d'acquisition client",
+        "Collecter les données de vente (rattacher les achats)",
+        "Développer la Customer Life Time Value"
+      ],
+      "correctAnswer": "Augmenter le coût d'acquisition client"
+    },
+    {
+      "question": "Offrir des retouches gratuites ou un service client dédié aux membres d'un programme de fidélité sont des exemples d'avantages :",
+      "options": [
+        "Transactionnels",
+        "Serviciels",
+        "Émotionnels",
+        "Financiers uniquement"
+      ],
+      "correctAnswer": "Serviciels"
+    },
+    {
+      "question": "Un programme de fidélité qui propose des niveaux (tiers) avec des avantages croissants est basé sur un système de :",
+      "options": [
+        "Cashback uniquement",
+        "Statuts",
+        "Points non convertibles",
+        "Récompenses aléatoires"
+      ],
+      "correctAnswer": "Statuts"
+    },
+    {
+      "question": "La tendance de 'l'usage plutôt que la possession' en fidélisation vise principalement à :",
+      "options": [
+        "Augmenter la marge brute sur chaque produit vendu",
+        "Améliorer l'accessibilité du produit et créer une récurrence de la relation",
+        "Réduire les coûts de production",
+        "Limiter le nombre de clients pour offrir un service plus exclusif"
+      ],
+      "correctAnswer": "Améliorer l'accessibilité du produit et créer une récurrence de la relation"
+    },
+    {
+      "question": "L'organisation d'événements uniques et immersifs pour les clients, comme 'Sephoria' par Sephora, relève de la tendance :",
+      "options": [
+        "De l'abonnement",
+        "De la personnalisation via la data",
+        "De l'expérientiel",
+        "Du recentrage sur le positionnement de marque"
+      ],
+      "correctAnswer": "De l'expérientiel"
+    },
+    {
+      "question": "La tendance '2nde main / Recyclage' dans les programmes de fidélité permet notamment de :",
+      "options": [
+        "Augmenter la production de neuf",
+        "Capter une partie de la valeur du marché de la seconde main et créer un nouveau point de contact",
+        "Se déresponsabiliser de la fin de vie des produits",
+        "Communiquer uniquement sur des aspects écologiques sans actions concrètes"
+      ],
+      "correctAnswer": "Capter une partie de la valeur du marché de la seconde main et créer un nouveau point de contact"
+    }
+  ]
+}
