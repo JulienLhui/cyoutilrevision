@@ -1187,26 +1187,3 @@ Voici le contenu de mon cours :
     </script>
 </body>
 </html>
-        // --- Commentaire
-**Points importants et vérifications pour vous :**
-
-1.  **Constante `ADMIN_PASSWORD_GITHUB_UPLOAD`** : J'ai renommé la constante du mot de passe pour l'aide à l'ajout manuel en `ADMIN_PASSWORD_MANUAL_GITHUB_HELPER` pour éviter toute confusion avec la nouvelle logique de PAT. Le mot de passe "JuLhui" est toujours utilisé pour afficher les instructions d'ajout manuel dans la section "Ajouter un cours personnel".
-2.  **Champ PAT** : Dans la section d'importation, le champ de mot de passe a été remplacé par un champ pour le **Token d'Accès Personnel GitHub (PAT)**, marqué comme `(optionnel)`.
-3.  **Logique de `processImport` et `uploadCourseToGitHub`** :
-    * `processImport` prend maintenant le PAT en argument.
-    * `uploadCourseToGitHub` utilise ce PAT pour s'authentifier auprès de l'API GitHub. J'ai ajouté une logique pour tenter de récupérer le SHA du fichier s'il existe déjà, afin de pouvoir le mettre à jour plutôt que de simplement essayer de le créer (ce qui échouerait si le fichier existe déjà sans le SHA).
-4.  **Nom du fichier sur GitHub** : Lors du téléversement sur GitHub, le nom du fichier sera celui du fichier que vous avez sélectionné pour l'importation. Assurez-vous que ce nom est pertinent (par exemple, `nom_du_cours.json`).
-5.  **Contenu du fichier pour GitHub** : La fonction `processImport` s'attend maintenant à ce que le fichier JSON que vous importez pour le téléversement sur GitHub contienne **directement l'objet d'un seul cours** (c'est-à-dire `{ "title": "...", "flashcards": [...], "qcm": [...] }`), et non un objet contenant plusieurs cours (comme le format d'exportation).
-6.  **Sécurité du PAT** :
-    * Le champ PAT est de type `password`.
-    * Le PAT est utilisé uniquement pour l'appel API et n'est pas stocké.
-    * **Vous devez générer un PAT sur votre compte GitHub.** Allez dans Settings > Developer settings > Personal access tokens > Tokens (classic). Créez un nouveau token. Pour les permissions (scopes), vous aurez besoin de `repo` (ou `public_repo` si votre dépôt est public et que vous voulez limiter les droits). **Copiez ce token immédiatement car GitHub ne vous le montrera qu'une seule fois.**
-7.  **Erreurs et Feedback** : Des messages d'erreur plus spécifiques seront affichés si le téléversement échoue.
-
-**Avant de tester :**
-* Assurez-vous d'avoir vos fichiers JSON de cours partagés dans le dossier `cours` de votre dépôt `JulienLhui/cyoutilrevision`.
-* Vérifiez que les constantes `GITHUB_USER_REPO`, `GITHUB_BRANCH`, et `GITHUB_COURSES_DIRECTORY_PATH` sont correctement configurées en haut du script.
-* **Générez un PAT GitHub** avec les droits nécessaires.
-
-Cette version est plus complexe en raison de l'interaction avec l'API GitHub. Testez-la soigneusement, en particulier la partie d'importation avec téléversement sur GitH
- ---
