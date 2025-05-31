@@ -29,14 +29,14 @@
         .feedback-incorrect { background-color: #fee2e2; color: #991b1b; }
         .hidden { display: none; }
         .question-counter { font-size: 0.9em; color: #6b7280; margin-bottom: 1rem; text-align: center; }
-        #generatedJsonOutputTextarea, #githubInstructionsContent, #manualGeminiPromptTextarea { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
-        #generatedJsonOutputTextarea { min-height: 150px; } 
+        #rawCourseContentInput, #generatedJsonOutputTextarea, #githubInstructionsContent, #manualGeminiPromptTextarea { font-family: monospace; font-size: 0.9em; border: 1px solid #d1d5db; padding: 8px; border-radius: 6px; background-color: #f9fafb; white-space: pre-wrap; word-wrap: break-word; max-height: 200px; overflow-y: auto; }
+        #rawCourseContentInput, #generatedJsonOutputTextarea { min-height: 150px; }
         .copy-feedback { font-size: 0.8rem; color: #4b5563; margin-left: 8px; }
         .course-button-container { display: inline-flex; align-items: center; margin-right: 8px; margin-bottom: 8px; }
         .delete-course-btn { background-color: transparent; border: none; color: #ef4444; font-size: 1.2em; font-weight: bold; margin-left: 5px; cursor: pointer; padding: 0 5px; line-height: 1; }
         .delete-course-btn:hover { color: #dc2626; }
         .course-section-title { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; margin-top: 1rem; text-align: left; }
-        #loadingMessage, #noGitHubCoursesMessage { text-align: center; padding: 10px; font-style: italic; color: #4b5563; }
+        #loadingMessage, #noGitHubCoursesMessage, #geminiLoadingMessage { text-align: center; padding: 10px; font-style: italic; color: #4b5563; }
         .io-section { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #e5e7eb; }
         .io-section h3 { font-size: 1.1em; font-weight: 500; color: #374151; margin-bottom: 0.75rem; }
         #importFile { display: none; }
@@ -110,9 +110,7 @@
         <div id="exportModal" class="modal hidden">
             <div class="modal-content">
                 <h3 class="modal-header">Exporter des Cours</h3>
-                <div id="exportCourseList" class="modal-body">
-                    {/* Les cases à cocher des cours seront injectées ici */}
-                </div>
+                <div id="exportCourseList" class="modal-body"></div>
                 <div id="exportFeedback" class="text-sm text-red-500 my-2 text-center"></div>
                 <div class="modal-footer">
                     <button id="downloadSelectedCoursesBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Télécharger la sélection</button>
@@ -128,25 +126,42 @@
                 <input type="text" id="newCourseName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: Mon Cours d'Histoire">
             </div>
             
-            <div class="mb-2">
-                 <button id="showManualPromptBtn" class="text-sm text-blue-600 hover:underline">Afficher/Copier le prompt pour génération manuelle avec un LLM</button>
-            </div>
-            <div id="manualPromptContainer" class="manual-prompt-container hidden mb-4">
-                <p class="text-xs text-gray-600 mb-1">Utilisez ce prompt avec un outil comme Gemini si vous souhaitez générer le JSON vous-même :</p>
-                <textarea id="manualGeminiPromptTextarea" rows="5" readonly class="w-full text-xs"></textarea>
-                <button id="copyManualPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-1 text-xs">Copier ce Prompt</button>
-                <span id="copyManualPromptFeedback" class="copy-feedback hidden"></span>
+            <div class="mb-4 p-4 border border-dashed border-gray-300 rounded-md">
+                <h4 class="text-md font-semibold text-gray-700 mb-2">Option 1: Générer avec l'API Gemini</h4>
+                <div class="mb-3">
+                    <label for="userGeminiApiKeyInput" class="block text-sm font-medium text-gray-700 mb-1">Votre Clé API Google Gemini (requise pour cette option) :</label>
+                    <input type="password" id="userGeminiApiKeyInput" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez votre clé API ici">
+                </div>
+                <div class="mb-3">
+                    <label for="courseFileInput" class="block text-sm font-medium text-gray-700 mb-1">Téléverser un fichier .txt avec le contenu du cours (optionnel) :</label>
+                    <input type="file" id="courseFileInput" accept=".txt" class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-violet-50 file:text-violet-700 hover:file:bg-violet-100">
+                    <p class="text-xs text-gray-500 mt-1">Pour les .docx ou .pdf, veuillez copier-coller le texte dans la zone ci-dessous.</p>
+                </div>
+                <div class="mb-3">
+                    <label for="rawCourseContentInput" class="block text-sm font-medium text-gray-700 mb-1">Ou collez le contenu brut de votre cours ici :</label>
+                    <textarea id="rawCourseContentInput" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le texte de votre cours..."></textarea>
+                </div>
+                <div class="text-center">
+                    <button id="generateWithGeminiBtn" class="btn bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md">✨ Générer Flashcards & QCM avec Gemini</button>
+                    <div id="geminiLoadingMessage" class="hidden mt-2"><div class="spinner"></div>Traitement par Gemini en cours...</div>
+                </div>
             </div>
 
-            <div class="mb-6">
-                <label for="generatedJsonOutputTextarea" class="block text-sm font-medium text-gray-700 mb-1">Collez ici le JSON du cours (préparé manuellement ou généré par un LLM externe) :</label>
-                <textarea id="generatedJsonOutputTextarea" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
+            <div class="mb-6 p-4 border border-dashed border-gray-300 rounded-md">
+                <h4 class="text-md font-semibold text-gray-700 mb-2">Option 2: Fournir le JSON manuellement</h4>
+                <div class="mb-2">
+                     <button id="showManualPromptBtn" class="text-sm text-blue-600 hover:underline">Afficher/Copier le prompt pour génération manuelle</button>
+                </div>
+                <div id="manualPromptContainer" class="manual-prompt-container hidden mb-4">
+                    <p class="text-xs text-gray-600 mb-1">Utilisez ce prompt avec un outil LLM si vous souhaitez générer le JSON vous-même :</p>
+                    <textarea id="manualGeminiPromptTextarea" rows="5" readonly class="w-full text-xs"></textarea>
+                    <button id="copyManualPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-1 text-xs">Copier ce Prompt</button>
+                    <span id="copyManualPromptFeedback" class="copy-feedback hidden"></span>
+                </div>
+                <label for="generatedJsonOutputTextarea" class="block text-sm font-medium text-gray-700 mb-1 mt-3">Collez ici le JSON du cours (généré par l'Option 1 ou préparé manuellement) :</label>
+                <textarea id="generatedJsonOutputTextarea" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Le JSON généré ou préparé manuellement apparaîtra ici..."></textarea>
             </div>
             
-            <!-- <div class="mb-4">
-                <label for="adminPassword" class="block text-sm font-medium text-gray-700 mb-1">Mot de passe administrateur (optionnel, pour aide à l'ajout manuel sur GitHub) :</label>
-                <input type="password" id="adminPassword" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Entrez 'JuLhui' pour instructions">
-            </div> -->
             <div id="addCourseFeedback" class="feedback-message hidden mb-4"></div>
             <div class="flex justify-center space-x-4 mt-6">
                 <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours personnel</button>
@@ -173,11 +188,25 @@
                 </div>
             </div>
             <div id="flashcardMessage" class="text-sm text-gray-500 text-center mb-4 h-6">Cliquez sur la carte pour voir la réponse.</div>
+             <div class="text-center mb-4">
+                <button id="explainAnswerBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md text-sm hidden">✨ M'en dire plus sur cette réponse</button>
+            </div>
             <div class="flex justify-center space-x-4">
                 <button id="nextFlashcardBtn" class="btn bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Suivante</button>
             </div>
             <button id="backToModeSelectionFromFlashcardsBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md mt-6 block mx-auto">Retour au choix du mode</button>
         </section>
+
+        <div id="flashcardExplanationModal" class="modal hidden">
+            <div class="modal-content">
+                <h3 class="modal-header">Explication Détaillée</h3>
+                <div id="flashcardExplanationSpinner" class="spinner hidden"></div>
+                <div id="flashcardExplanationContent" class="modal-body"></div>
+                <div class="modal-footer">
+                    <button id="closeFlashcardExplanationModalBtn" class="btn bg-gray-300 hover:bg-gray-400 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md">Fermer</button>
+                </div>
+            </div>
+        </div>
 
         <section id="qcmSection" class="hidden">
             <h2 class="text-2xl font-semibold text-gray-700 mb-2 text-center">Questionnaire à Choix Multiples</h2>
@@ -203,13 +232,11 @@
         let currentFlashcardIndex = 0;
         let currentQcmIndex = 0;
         let selectedQcmOption = null;
-        // const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; // Retiré car la fonctionnalité associée est retirée
+        // const ADMIN_PASSWORD_MANUAL_GITHUB_HELPER = "JuLhui"; // Retiré
 
-        // !!! VÉRIFIEZ BIEN CES CONSTANTES !!!
         const GITHUB_USER_REPO = 'JulienLhui/cyoutilrevision'; 
         const GITHUB_BRANCH = 'main'; 
         const GITHUB_COURSES_DIRECTORY_PATH = 'cours'; 
-        // !!! ------------------------------------ !!!
 
         const mainTitle = document.getElementById('mainTitle');
         const welcomeSection = document.getElementById('welcomeSection');
@@ -220,7 +247,12 @@
         
         const addCourseSection = document.getElementById('addCourseSection');
         const newCourseNameInput = document.getElementById('newCourseName');
-        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea'); 
+        const rawCourseContentInput = document.getElementById('rawCourseContentInput');
+        const courseFileInput = document.getElementById('courseFileInput');
+        const userGeminiApiKeyInput = document.getElementById('userGeminiApiKeyInput');
+        const generateWithGeminiBtn = document.getElementById('generateWithGeminiBtn');
+        const geminiLoadingMessage = document.getElementById('geminiLoadingMessage');
+        const generatedJsonOutputTextarea = document.getElementById('generatedJsonOutputTextarea');
         const showManualPromptBtn = document.getElementById('showManualPromptBtn');
         const manualPromptContainer = document.getElementById('manualPromptContainer');
         const manualGeminiPromptTextarea = document.getElementById('manualGeminiPromptTextarea');
@@ -253,6 +285,12 @@
         const nextFlashcardBtn = document.getElementById('nextFlashcardBtn');
         const flashcardMessage = document.getElementById('flashcardMessage');
         const flashcardCounter = document.getElementById('flashcardCounter');
+        const explainAnswerBtn = document.getElementById('explainAnswerBtn');
+        const flashcardExplanationModal = document.getElementById('flashcardExplanationModal');
+        const flashcardExplanationContent = document.getElementById('flashcardExplanationContent');
+        const flashcardExplanationSpinner = document.getElementById('flashcardExplanationSpinner');
+        const closeFlashcardExplanationModalBtn = document.getElementById('closeFlashcardExplanationModalBtn');
+
 
         const qcmSection = document.getElementById('qcmSection');
         const qcmQuestionElement = document.getElementById('qcmQuestionElement');
@@ -284,6 +322,15 @@
 
         let selectedFileForImport = null; 
 
+        const GEMINI_PROMPT_FOR_GENERATION = `À partir du texte de cours suivant, génère une liste de cartes flash (question/réponse) et une liste de questions à choix multiples (QCM).
+Formatte la sortie comme un unique objet JSON valide avec les clés "title" (utilise le nom de cours fourni par l'utilisateur s'il y en a un, sinon déduis-le), "flashcards" (un tableau d'objets avec "question" et "answer"), et "qcm" (un tableau d'objets avec "question", "options" (tableau de 3-4 chaînes), et "correctAnswer" (une chaîne qui est une copie exacte de l'une des options)).
+Assure-toi que pour chaque QCM, la valeur de "correctAnswer" correspond EXACTEMENT à l'une des chaînes dans "options". Si une option contient un marqueur comme "[cite: X]", et que c'est la bonne réponse, "correctAnswer" doit aussi l'inclure.
+
+Voici le contenu du cours :
+---
+[CONTENU_DU_COURS_ICI]
+---
+`;
         const GEMINI_PROMPT_FOR_USER_MANUAL_GENERATION = `Bonjour, j'ai un cours que j'aimerais transformer en fiches de révision et QCM pour un outil d'étude.
 
 Merci de générer à partir du contenu de cours que je vais vous fournir :
@@ -741,7 +788,7 @@ Voici le contenu de mon cours :
         function saveNewCourse() { 
             const courseName = newCourseNameInput.value.trim();
             const courseDataJSON = generatedJsonOutputTextarea.value.trim(); 
-            // const adminPass = adminPasswordInput.value; // Retiré de la logique principale de sauvegarde
+            // const adminPass = adminPasswordInput.value; // Retiré
 
             addCourseFeedback.classList.add('hidden');
             // githubInstructionsDiv.classList.add('hidden'); // Retiré
@@ -1095,7 +1142,7 @@ Voici le contenu de mon cours :
             fallbackCopyTextToClipboard(manualGeminiPromptTextarea.value, copyManualPromptFeedback, "Prompt copié !", "Échec copie. Copiez manuellement.");
         });
         
-        // if(copyGithubJsonBtn) { // Cette condition n'est plus nécessaire car le bouton est retiré
+        // if(copyGithubJsonBtn) { // Cette partie est maintenant commentée car githubInstructionsDiv est retiré
         //     copyGithubJsonBtn.addEventListener('click', () => {
         //         const textToCopy = githubInstructionsContentElement.textContent;
         //         fallbackCopyTextToClipboard(textToCopy, copyGithubJsonFeedback, "JSON Copié !", "Échec copie JSON. Copiez manuellement.");
