@@ -96,13 +96,47 @@
             margin-bottom: 1rem;
             text-align: center;
         }
+        #addCoursePromptContainer pre, #newCourseData {
+            font-family: monospace;
+            font-size: 0.9em;
+            border: 1px solid #d1d5db;
+            padding: 8px;
+            border-radius: 6px;
+            background-color: #f9fafb;
+            white-space: pre-wrap; 
+            word-wrap: break-word; 
+            max-height: 200px;
+            overflow-y: auto;
+        }
+         #newCourseData {
+            min-height: 150px;
+         }
+        .copy-feedback {
+            font-size: 0.8rem;
+            color: #4b5563;
+            margin-left: 8px;
+        }
         .course-button-container {
             display: inline-flex; 
             align-items: center;
             margin-right: 8px; 
             margin-bottom: 8px; 
         }
-         .course-section-title {
+        .delete-course-btn {
+            background-color: transparent;
+            border: none;
+            color: #ef4444; 
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 5px;
+            cursor: pointer;
+            padding: 0 5px;
+            line-height: 1;
+        }
+        .delete-course-btn:hover {
+            color: #dc2626; 
+        }
+        .course-section-title {
             font-size: 1.1em;
             font-weight: 500;
             color: #374151; 
@@ -110,11 +144,28 @@
             margin-top: 1rem;
             text-align: left;
         }
-        #loadingMessage {
+        #loadingMessage, #noGitHubCoursesMessage { /* Combined for GitHub loading status */
             text-align: center;
-            padding: 20px;
+            padding: 10px; /* Reduced padding */
             font-style: italic;
             color: #4b5563;
+        }
+        .io-section {
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+        .io-section h3 {
+            font-size: 1.1em;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+        #importFile {
+            display: none; 
+        }
+        .import-label-btn {
+            cursor: pointer;
         }
     </style>
 </head>
@@ -127,12 +178,69 @@
 
         <section id="welcomeSection" class="py-10">
             <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Choisissez un cours à réviser :</h2>
-            <div id="courseListContainer" class="flex flex-wrap justify-center md:justify-start">
-                {/* Les boutons des cours seront injectés ici */}
+            
+            <div>
+                <h3 class="course-section-title">Cours partagés (depuis GitHub) :</h3>
+                <div id="githubCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
+                    {/* Les boutons des cours GitHub seront injectés ici */}
+                </div>
+                 <p id="loadingMessage">Chargement des cours depuis GitHub...</p>
+                 <p id="noGitHubCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours partagé n'a pu être chargé depuis GitHub. Vérifiez la configuration et les fichiers.</p>
             </div>
-            <p id="loadingMessage" class="hidden">Chargement des cours...</p>
-            <p id="noCoursesMessage" class="text-gray-500 text-sm mt-4 text-center md:text-left hidden">Aucun cours disponible. Vérifiez la configuration (constantes GITHUB_USER_REPO, GITHUB_BRANCH, GITHUB_COURSES_DIRECTORY_PATH dans le script) et assurez-vous que des fichiers JSON existent dans le dossier spécifié de votre dépôt GitHub et que le dépôt est public.</p>
+
+            <div class="mt-6">
+                <h3 class="course-section-title">Vos cours personnels (stockés localement) :</h3>
+                <div id="localCourseListContainer" class="flex flex-wrap justify-center md:justify-start">
+                    {/* Les boutons des cours locaux seront injectés ici */}
+                </div>
+                <p id="noLocalCoursesMessage" class="text-gray-500 text-sm mt-2 text-center md:text-left hidden">Aucun cours personnel ajouté pour le moment.</p>
+            </div>
+
+            <div class="text-center mt-8">
+                <button id="showAddCourseSectionBtn" class="btn bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-8 rounded-lg shadow-md">Ajouter un cours personnel</button>
+            </div>
+
+            <div class="io-section text-center md:text-left">
+                <h3 class="text-center md:text-left">Gestion des données des cours :</h3>
+                <div class="flex flex-col md:flex-row justify-center md:justify-start space-y-2 md:space-y-0 md:space-x-3 mt-2">
+                    <button id="exportCoursesBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md">Exporter tous les cours</button>
+                    <label for="importFile" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md import-label-btn">Importer des cours personnels</label>
+                    <input type="file" id="importFile" accept=".json">
+                </div>
+                <p id="ioFeedback" class="text-sm text-gray-600 mt-3 text-center md:text-left"></p>
+            </div>
         </section>
+
+        <section id="addCourseSection" class="hidden py-6">
+            <h2 class="text-2xl font-semibold text-gray-700 mb-6 text-center">Ajouter un nouveau cours personnel</h2>
+            
+            <div class="mb-4">
+                <label for="newCourseName" class="block text-sm font-medium text-gray-700 mb-1">Nom du nouveau cours :</label>
+                <input type="text" id="newCourseName" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Ex: Mon Cours d'Histoire">
+            </div>
+
+            <div class="mb-4">
+                <p class="block text-sm font-medium text-gray-700 mb-1">1. Copiez le prompt suivant et utilisez-le avec Gemini (ou un outil similaire) en lui fournissant le contenu de votre cours :</p>
+                <div id="addCoursePromptContainer" class="bg-gray-50 p-3 rounded-md border">
+                    <pre id="addCoursePrompt"></pre>
+                </div>
+                <button id="copyPromptBtn" class="btn bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1 px-3 rounded-md shadow-sm mt-2 text-xs">Copier le Prompt</button>
+                <span id="copyPromptFeedback" class="copy-feedback hidden"></span>
+            </div>
+
+            <div class="mb-6">
+                <label for="newCourseData" class="block text-sm font-medium text-gray-700 mb-1">2. Collez ici les données JSON générées (doit contenir 'title', 'flashcards', 'qcm') :</label>
+                <textarea id="newCourseData" rows="8" class="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" placeholder="Collez le JSON ici..."></textarea>
+            </div>
+            
+            <div id="addCourseFeedback" class="feedback-message hidden mb-4"></div>
+
+            <div class="flex justify-center space-x-4">
+                <button id="saveCourseBtn" class="btn bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Sauvegarder le cours</button>
+                <button id="backToWelcomeFromAddBtn" class="btn bg-gray-500 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-lg shadow-md">Retour à l'accueil</button>
+            </div>
+        </section>
+
 
         <section id="modeSelectionSection" class="hidden text-center py-10">
             <h2 id="modeSelectionTitle" class="text-2xl font-semibold text-gray-700 mb-6"></h2>
@@ -180,33 +288,42 @@
     </div>
 
     <script>
-        let coursesData = {}; 
+        const USER_COURSES_LOCAL_STORAGE_KEY = 'revisionAppUserCourses_v2'; // Clé pour les cours personnels
+        let gitHubCoursesData = {}; 
+        let userCoursesData = {};   
         let currentCourseKey = null;
         let currentFlashcardIndex = 0;
         let currentQcmIndex = 0;
         let selectedQcmOption = null;
 
         // ===================================================================================
-        // CONFIGURATION IMPORTANTE POUR LE CHARGEMENT DES COURS DEPUIS GITHUB
+        // CONFIGURATION POUR LE CHARGEMENT DES COURS DEPUIS GITHUB
         // ===================================================================================
-        // 1. REMPLACEZ 'JulienChoi/cyoutilrevision' ci-dessous par VOTRE_NOM_UTILISATEUR_GITHUB/NOM_DE_VOTRE_DEPOT_GITHUB
-        const GITHUB_USER_REPO = 'JulienLhui/cyoutilrevision'; 
-        
-        // 2. REMPLACEZ 'main' ci-dessous par le nom de votre branche principale si elle est différente (ex: 'master')
+        const GITHUB_USER_REPO = 'JulienChoi/cyoutilrevision'; 
         const GITHUB_BRANCH = 'main'; 
-        
-        // 3. INDIQUEZ LE CHEMIN VERS LE DOSSIER CONTENANT VOS FICHIERS JSON DE COURS DANS LE DÉPÔT
-        //    Si les fichiers sont à la racine, laissez une chaîne vide ''.
-        //    Si les fichiers sont dans un dossier nommé "cours", mettez 'cours'.
-        const GITHUB_COURSES_DIRECTORY_PATH = 'cours'; // MODIFIÉ : chemin vers le dossier "cours"
+        const GITHUB_COURSES_DIRECTORY_PATH = 'cours'; 
         // ===================================================================================
 
         // --- Éléments du DOM ---
         const mainTitle = document.getElementById('mainTitle');
         const welcomeSection = document.getElementById('welcomeSection');
-        const courseListContainer = document.getElementById('courseListContainer');
+        const githubCourseListContainer = document.getElementById('githubCourseListContainer');
+        const localCourseListContainer = document.getElementById('localCourseListContainer');
+        const noLocalCoursesMessage = document.getElementById('noLocalCoursesMessage');
+        const showAddCourseSectionBtn = document.getElementById('showAddCourseSectionBtn');
+        
+        const addCourseSection = document.getElementById('addCourseSection');
+        const newCourseNameInput = document.getElementById('newCourseName');
+        const addCoursePromptElement = document.getElementById('addCoursePrompt');
+        const copyPromptBtn = document.getElementById('copyPromptBtn');
+        const copyPromptFeedback = document.getElementById('copyPromptFeedback'); 
+        const newCourseDataTextarea = document.getElementById('newCourseData');
+        const saveCourseBtn = document.getElementById('saveCourseBtn');
+        const backToWelcomeFromAddBtn = document.getElementById('backToWelcomeFromAddBtn');
+        const addCourseFeedback = document.getElementById('addCourseFeedback');
+
         const loadingMessage = document.getElementById('loadingMessage');
-        const noCoursesMessage = document.getElementById('noCoursesMessage');
+        const noGitHubCoursesMessage = document.getElementById('noGitHubCoursesMessage'); // Renommé pour clarté
         
         const modeSelectionSection = document.getElementById('modeSelectionSection');
         const modeSelectionTitle = document.getElementById('modeSelectionTitle');
@@ -233,8 +350,72 @@
         const backToWelcomeFromModeBtn = document.getElementById('backToWelcomeFromModeBtn');
         const backToModeSelectionFromFlashcardsBtn = document.getElementById('backToModeSelectionFromFlashcardsBtn');
         const backToModeSelectionFromQcmBtn = document.getElementById('backToModeSelectionFromQcmBtn');
+        
+        const exportCoursesBtn = document.getElementById('exportCoursesBtn');
+        const importFile = document.getElementById('importFile');
+        const ioFeedback = document.getElementById('ioFeedback');
 
-        // Fonction pour récupérer et valider le contenu d'un fichier de cours spécifique via son URL de téléchargement direct
+        const GEMINI_PROMPT = `Bonjour Gemini, j'ai un cours que j'aimerais transformer en fiches de révision et QCM pour mon outil.
+
+Merci de générer à partir du contenu de cours que je vais vous fournir :
+1.  Une liste de cartes flash (questions concises et réponses directes).
+2.  Une liste de questions à choix multiples (QCM) avec 3 ou 4 options de réponse et une seule bonne réponse clairement identifiée.
+
+Veuillez fournir la sortie sous la forme d'un unique objet JSON valide, structuré exactement comme suit (ne modifiez pas les noms des clés) :
+{
+  "title": "METTRE ICI LE TITRE EXACT DU COURS FOURNI",
+  "flashcards": [
+    { "question": "Question pour la carte flash 1...", "answer": "Réponse pour la carte flash 1..." },
+    { "question": "Question pour la carte flash 2...", "answer": "Réponse pour la carte flash 2..." }
+  ],
+  "qcm": [
+    { "question": "Question QCM 1...", "options": ["Option A", "Option B", "Option C", "Option D (si applicable)"], "correctAnswer": "Option correcte pour QCM 1" },
+    { "question": "Question QCM 2...", "options": ["Option A", "Option B", "Option C"], "correctAnswer": "Option correcte pour QCM 2" }
+  ]
+}
+
+Le champ "title" doit être une chaîne de caractères.
+"flashcards" doit être un tableau d'objets, chaque objet ayant impérativement les clés "question" et "answer" (chaînes de caractères).
+"qcm" doit être un tableau d'objets, chaque objet ayant impérativement les clés "question" (chaîne), "options" (tableau de chaînes), et "correctAnswer" (chaîne de caractères).
+
+**Instruction importante pour les QCM :** La valeur du champ "correctAnswer" doit être une copie **exacte** de l'une des chaînes de caractères fournies dans le tableau "options" pour cette question. N'ajoutez aucun texte supplémentaire, marqueur de citation (comme "[cite: X]"), ou modification à la "correctAnswer" qui ne soit pas présent tel quel dans les "options".
+
+Voici le contenu de mon cours :
+[VEUILLEZ COLLER LE CONTENU INTÉGRAL DE VOTRE COURS ICI]`;
+
+        function loadUserCoursesFromLocalStorage() {
+            console.log("LOCAL_STORAGE_LOAD: Tentative de chargement des cours utilisateur.");
+            const storedUserCourses = localStorage.getItem(USER_COURSES_LOCAL_STORAGE_KEY);
+            if (storedUserCourses) {
+                try {
+                    userCoursesData = JSON.parse(storedUserCourses);
+                    if (typeof userCoursesData !== 'object' || userCoursesData === null) {
+                        userCoursesData = {}; 
+                    }
+                    console.log("LOCAL_STORAGE_LOAD: Cours utilisateur chargés:", userCoursesData);
+                } catch (error) {
+                    console.error("LOCAL_STORAGE_LOAD: Erreur de parsing des cours utilisateur:", error);
+                    userCoursesData = {};
+                }
+            } else {
+                userCoursesData = {};
+                console.log("LOCAL_STORAGE_LOAD: Aucun cours utilisateur trouvé dans localStorage.");
+            }
+        }
+
+        function saveUserCoursesToLocalStorage() {
+            console.log("LOCAL_STORAGE_SAVE: Tentative de sauvegarde des cours utilisateur:", userCoursesData);
+            try {
+                localStorage.setItem(USER_COURSES_LOCAL_STORAGE_KEY, JSON.stringify(userCoursesData));
+                console.log("LOCAL_STORAGE_SAVE: Cours utilisateur sauvegardés avec succès.");
+            } catch (error) {
+                console.error("LOCAL_STORAGE_SAVE: Erreur de sauvegarde des cours utilisateur:", error);
+                ioFeedback.textContent = "Erreur lors de la sauvegarde des cours personnels.";
+                ioFeedback.style.color = "red";
+                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+            }
+        }
+        
         async function fetchAndValidateCourseContent(downloadUrl, fileNameForLogging) {
             console.log(`GITHUB_FETCH: Tentative de chargement du contenu de ${fileNameForLogging} depuis ${downloadUrl}`);
             try {
@@ -244,7 +425,6 @@
                     throw new Error(`HTTP error! status: ${response.status} pour ${fileNameForLogging}`);
                 }
                 const data = await response.json();
-                // Valider la structure de base du cours
                 if (data && typeof data.title === 'string' && Array.isArray(data.flashcards) && Array.isArray(data.qcm)) {
                     const flashcardsValid = data.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
                     const qcmValid = data.qcm.every(q => {
@@ -255,34 +435,32 @@
                     if (flashcardsValid && qcmValid) {
                         return { key: fileNameForLogging.replace('.json', ''), data: data };
                     } else {
-                        console.error(`GITHUB_FETCH: Structure de contenu invalide dans ${fileNameForLogging}. Vérifiez les questions/réponses et les options/correctAnswer des QCM.`);
+                        console.error(`GITHUB_FETCH: Structure de contenu invalide dans ${fileNameForLogging}.`);
                         return null;
                     }
                 } else {
-                     console.error(`GITHUB_FETCH: Structure JSON principale invalide pour ${fileNameForLogging}. 'title', 'flashcards' (tableau), et 'qcm' (tableau) sont requis.`);
+                     console.error(`GITHUB_FETCH: Structure JSON principale invalide pour ${fileNameForLogging}.`);
                     return null;
                 }
             } catch (error) {
-                console.error(`GITHUB_FETCH: Erreur lors du traitement du fichier de cours ${fileNameForLogging} depuis ${downloadUrl}:`, error);
+                console.error(`GITHUB_FETCH: Erreur lors du traitement de ${fileNameForLogging}:`, error);
                 return null;
             }
         }
 
         async function loadCoursesFromGitHub() {
-            console.log("GITHUB_FETCH: Début du chargement des cours depuis GitHub...");
+            console.log("GITHUB_FETCH: Début du chargement des cours partagés...");
             loadingMessage.classList.remove('hidden');
-            noCoursesMessage.classList.add('hidden');
-            courseListContainer.innerHTML = '';
-
-            // URL de l'API GitHub pour lister le contenu du dossier des cours
+            noGitHubCoursesMessage.classList.add('hidden'); 
+            
             const apiUrl = `https://api.github.com/repos/${GITHUB_USER_REPO}/contents/${GITHUB_COURSES_DIRECTORY_PATH}?ref=${GITHUB_BRANCH}`;
-            console.log(`GITHUB_FETCH: Interrogation de l'API GitHub pour le contenu du dossier: ${apiUrl}`);
+            console.log(`GITHUB_FETCH: Interrogation API: ${apiUrl}`);
 
             let filesToFetch = [];
             try {
                 const response = await fetch(apiUrl);
                 if (!response.ok) {
-                    console.error(`GITHUB_FETCH: Erreur HTTP lors de la récupération de la liste des fichiers! Statut: ${response.status}, Texte: ${response.statusText} (URL: ${apiUrl})`);
+                    console.error(`GITHUB_FETCH: Erreur API GitHub! Statut: ${response.status}, (URL: ${apiUrl})`);
                     throw new Error(`GitHub API error! status: ${response.status}`);
                 }
                 const directoryContents = await response.json();
@@ -290,113 +468,174 @@
                     filesToFetch = directoryContents
                         .filter(item => item.type === 'file' && item.name.endsWith('.json'))
                         .map(item => ({ name: item.name, download_url: item.download_url }));
-                    console.log("GITHUB_FETCH: Fichiers JSON trouvés dans le dossier:", filesToFetch.map(f => f.name));
+                    console.log("GITHUB_FETCH: Fichiers JSON trouvés:", filesToFetch.map(f => f.name));
                 } else {
-                    console.error("GITHUB_FETCH: La réponse de l'API GitHub pour le contenu du dossier n'est pas un tableau.", directoryContents);
+                    console.error("GITHUB_FETCH: Réponse API GitHub non conforme (pas un tableau).", directoryContents);
                 }
             } catch (error) {
-                console.error("GITHUB_FETCH: Erreur lors de la récupération de la liste des fichiers depuis l'API GitHub:", error);
+                console.error("GITHUB_FETCH: Erreur récupération liste fichiers:", error);
                 loadingMessage.classList.add('hidden');
-                noCoursesMessage.classList.remove('hidden');
-                populateCourseList(); // Afficher la liste (qui sera vide) et le message d'erreur
-                return;
+                noGitHubCoursesMessage.classList.remove('hidden'); 
+                return; 
             }
 
             if (filesToFetch.length === 0) {
-                console.warn("GITHUB_FETCH: Aucun fichier .json trouvé dans le dossier spécifié sur GitHub.");
+                console.warn("GITHUB_FETCH: Aucun fichier .json trouvé dans le dossier GitHub.");
                 loadingMessage.classList.add('hidden');
-                noCoursesMessage.classList.remove('hidden');
-                populateCourseList();
-                return;
+                noGitHubCoursesMessage.classList.remove('hidden'); 
             }
 
             const coursePromises = filesToFetch.map(fileInfo => fetchAndValidateCourseContent(fileInfo.download_url, fileInfo.name));
             const results = await Promise.all(coursePromises);
 
-            coursesData = {}; 
+            gitHubCoursesData = {}; 
             results.forEach(result => {
                 if (result && result.data) {
-                    coursesData[result.key] = result.data;
-                    console.log(`GITHUB_FETCH: Cours "${result.data.title}" (clé: ${result.key}) chargé avec succès.`);
+                    gitHubCoursesData[result.key] = result.data;
+                    console.log(`GITHUB_FETCH: Cours partagé "${result.data.title}" (clé: ${result.key}) chargé.`);
                 }
             });
             
             loadingMessage.classList.add('hidden');
-            if (Object.keys(coursesData).length === 0) {
-                noCoursesMessage.classList.remove('hidden');
-                console.warn("GITHUB_FETCH: Aucun cours n'a pu être chargé correctement depuis GitHub malgré la détection de fichiers. Vérifiez les logs d'erreur ci-dessus et la structure des fichiers JSON.");
+            if (Object.keys(gitHubCoursesData).length === 0 && filesToFetch.length > 0) {
+                 console.warn("GITHUB_FETCH: Fichiers JSON détectés mais aucun cours partagé n'a pu être chargé correctement.");
+                 noGitHubCoursesMessage.classList.remove('hidden');
+            } else if (filesToFetch.length === 0) {
+                noGitHubCoursesMessage.classList.remove('hidden'); 
             } else {
-                console.log("GITHUB_FETCH: Tous les cours disponibles ont été traités. Données finales:", coursesData);
+                noGitHubCoursesMessage.classList.add('hidden'); 
             }
-            populateCourseList();
         }
 
-
-        // --- Fonctions de navigation et d'affichage ---
         function showWelcomeScreen() {
             mainTitle.textContent = "Mon Outil de Révision";
             welcomeSection.classList.remove('hidden');
+            addCourseSection.classList.add('hidden');
             modeSelectionSection.classList.add('hidden');
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
             currentCourseKey = null;
-            if (Object.keys(coursesData).length > 0 || loadingMessage.classList.contains('hidden')) { // Populate if data exists or loading is done
-                 populateCourseList();
-            }
+            populateCourseList();
+        }
+
+        function showAddCourseScreen() {
+            mainTitle.textContent = "Ajouter un Nouveau Cours Personnel";
+            welcomeSection.classList.add('hidden');
+            addCourseSection.classList.remove('hidden');
+            modeSelectionSection.classList.add('hidden');
+            flashcardsSection.classList.add('hidden');
+            qcmSection.classList.add('hidden');
+            addCoursePromptElement.textContent = GEMINI_PROMPT;
+            newCourseNameInput.value = '';
+            newCourseDataTextarea.value = '';
+            addCourseFeedback.classList.add('hidden');
+            copyPromptFeedback.classList.add('hidden'); 
         }
         
         function populateCourseList() {
-            courseListContainer.innerHTML = ''; 
+            githubCourseListContainer.innerHTML = ''; 
+            localCourseListContainer.innerHTML = '';
+            let localCoursesExist = false;
             
-            if (Object.keys(coursesData).length === 0 && loadingMessage.classList.contains('hidden')) {
-                noCoursesMessage.classList.remove('hidden');
-                return;
-            }
-            noCoursesMessage.classList.add('hidden');
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
 
-
-            Object.keys(coursesData).forEach(key => {
-                const course = coursesData[key];
+            // Afficher les cours GitHub
+            Object.keys(gitHubCoursesData).forEach(key => {
+                const course = gitHubCoursesData[key];
                 const buttonContainer = document.createElement('div');
                 buttonContainer.classList.add('course-button-container');
-
-                const button = document.createElement('button');
-                button.dataset.course = key;
-                button.classList.add('course-btn', 'btn', 'text-white', 'font-semibold', 'py-2', 'px-4', 'rounded-lg', 'shadow-md');
-                
-                const colors = ['bg-sky-600 hover:bg-sky-700', 'bg-teal-600 hover:bg-teal-700', 'bg-indigo-600 hover:bg-indigo-700', 'bg-rose-600 hover:bg-rose-700', 'bg-amber-600 hover:bg-amber-700'];
-                const colorIndex = Object.keys(coursesData).indexOf(key) % colors.length; 
-                const colorClass = colors[colorIndex];
-                button.classList.add(...colorClass.split(' '));
-                button.textContent = course.title;
-                button.addEventListener('click', () => {
-                    currentCourseKey = button.dataset.course;
-                    currentFlashcardIndex = 0; 
-                    currentQcmIndex = 0;
-                    showModeSelectionScreen();
-                });
+                const button = createCourseButton(key, course.title, combinedCourses);
                 buttonContainer.appendChild(button);
-                courseListContainer.appendChild(buttonContainer);
+                githubCourseListContainer.appendChild(buttonContainer);
             });
+             if (Object.keys(gitHubCoursesData).length === 0 && loadingMessage.classList.contains('hidden')) {
+                 noGitHubCoursesMessage.classList.remove('hidden');
+            } else {
+                 noGitHubCoursesMessage.classList.add('hidden');
+            }
+
+
+            // Afficher les cours locaux
+            Object.keys(userCoursesData).forEach(key => {
+                if (!gitHubCoursesData[key]) { // S'assurer de ne pas dupliquer si une clé locale correspond à une clé GitHub
+                    localCoursesExist = true;
+                    const course = userCoursesData[key];
+                    const buttonContainer = document.createElement('div');
+                    buttonContainer.classList.add('course-button-container');
+                    const button = createCourseButton(key, course.title, combinedCourses);
+                    
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.innerHTML = '&#x2715;'; 
+                    deleteBtn.classList.add('delete-course-btn');
+                    deleteBtn.title = `Supprimer le cours "${course.title}"`;
+                    deleteBtn.addEventListener('click', (event) => {
+                        event.stopPropagation(); 
+                        deleteUserCourse(key, course.title);
+                    });
+                    buttonContainer.appendChild(button);
+                    buttonContainer.appendChild(deleteBtn);
+                    localCourseListContainer.appendChild(buttonContainer);
+                }
+            });
+
+            if (localCoursesExist) {
+                noLocalCoursesMessage.classList.add('hidden');
+            } else {
+                noLocalCoursesMessage.classList.remove('hidden');
+            }
+        }
+
+        function createCourseButton(key, title, sourceData) {
+            const button = document.createElement('button');
+            button.dataset.course = key;
+            button.classList.add('course-btn', 'btn', 'text-white', 'font-semibold', 'py-2', 'px-4', 'rounded-lg', 'shadow-md');
+            const colors = ['bg-sky-600 hover:bg-sky-700', 'bg-teal-600 hover:bg-teal-700', 'bg-indigo-600 hover:bg-indigo-700', 'bg-rose-600 hover:bg-rose-700', 'bg-amber-600 hover:bg-amber-700'];
+            // Pour la couleur, on se base sur l'index dans l'ensemble des cours combinés pour varier
+            const allKeys = Object.keys({...gitHubCoursesData, ...userCoursesData});
+            const colorIndex = allKeys.indexOf(key) % colors.length;
+            const colorClass = colors[colorIndex >= 0 ? colorIndex : 0]; // S'assurer que l'index est valide
+            button.classList.add(...colorClass.split(' '));
+            button.textContent = title;
+            button.addEventListener('click', () => {
+                currentCourseKey = key; 
+                currentFlashcardIndex = 0; 
+                currentQcmIndex = 0;
+                showModeSelectionScreen();
+            });
+            return button;
         }
         
+        function deleteUserCourse(courseKey, courseTitle) {
+            console.log(`LOCAL_STORAGE_DELETE: Suppression du cours utilisateur. Clé: ${courseKey}, Titre: ${courseTitle}`);
+            delete userCoursesData[courseKey]; 
+            saveUserCoursesToLocalStorage();
+            populateCourseList(); 
+            ioFeedback.textContent = `Le cours personnel "${courseTitle}" a été supprimé.`;
+            ioFeedback.style.color = "orange";
+            setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+        }
+
+
         function showModeSelectionScreen() {
-            if (!currentCourseKey || !coursesData[currentCourseKey]) { 
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            if (!currentCourseKey || !combinedCourses[currentCourseKey]) { 
                  console.error("Attempting to access non-existent course:", currentCourseKey);
                  showWelcomeScreen(); 
                  return;
             }
-            mainTitle.textContent = `Révision : ${coursesData[currentCourseKey].title}`;
-            modeSelectionTitle.textContent = `Cours : ${coursesData[currentCourseKey].title}. Choisissez un mode :`;
+            mainTitle.textContent = `Révision : ${combinedCourses[currentCourseKey].title}`;
+            modeSelectionTitle.textContent = `Cours : ${combinedCourses[currentCourseKey].title}. Choisissez un mode :`;
             welcomeSection.classList.add('hidden');
+            addCourseSection.classList.add('hidden');
             modeSelectionSection.classList.remove('hidden');
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.add('hidden');
         }
 
         function showFlashcardsScreen() {
-            if (!currentCourseKey || !coursesData[currentCourseKey]) { showWelcomeScreen(); return; }
-            mainTitle.textContent = `Cartes Flash : ${coursesData[currentCourseKey].title}`;
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
+            mainTitle.textContent = `Cartes Flash : ${combinedCourses[currentCourseKey].title}`;
             modeSelectionSection.classList.add('hidden');
             flashcardsSection.classList.remove('hidden');
             qcmSection.classList.add('hidden');
@@ -404,8 +643,9 @@
         }
 
         function showQcmScreen() {
-            if (!currentCourseKey || !coursesData[currentCourseKey]) { showWelcomeScreen(); return; }
-            mainTitle.textContent = `QCM : ${coursesData[currentCourseKey].title}`;
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            if (!currentCourseKey || !combinedCourses[currentCourseKey]) { showWelcomeScreen(); return; }
+            mainTitle.textContent = `QCM : ${combinedCourses[currentCourseKey].title}`;
             modeSelectionSection.classList.add('hidden');
             flashcardsSection.classList.add('hidden');
             qcmSection.classList.remove('hidden');
@@ -413,18 +653,19 @@
         }
         
         function displayFlashcard() {
-            if (!coursesData[currentCourseKey] || !coursesData[currentCourseKey].flashcards) { 
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards) { 
                 flashcardQuestion.textContent = "Erreur : Données de flashcards non trouvées pour ce cours.";
                 flashcardElement.classList.add('hidden');
                 nextFlashcardBtn.classList.add('hidden');
                 flashcardCounter.textContent = "0/0";
                 return;
             }
-            const courseFlashcards = coursesData[currentCourseKey].flashcards;
+            const courseFlashcards = combinedCourses[currentCourseKey].flashcards;
             if (courseFlashcards.length === 0) { 
                 flashcardQuestion.textContent = "Aucune carte flash disponible pour ce cours.";
                 flashcardAnswer.textContent = "";
-                flashcardMessage.textContent = "Vérifiez le fichier JSON du cours sur GitHub.";
+                flashcardMessage.textContent = "Vérifiez le fichier JSON du cours.";
                 nextFlashcardBtn.classList.add('hidden');
                 flashcardElement.classList.add('hidden');
                 flashcardCounter.textContent = "0/0";
@@ -442,7 +683,8 @@
         }
 
         function flipFlashcard() {
-            if (!currentCourseKey || !coursesData[currentCourseKey] || !coursesData[currentCourseKey].flashcards || coursesData[currentCourseKey].flashcards.length === 0) return;
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            if (!currentCourseKey || !combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].flashcards || combinedCourses[currentCourseKey].flashcards.length === 0) return;
             flashcardElement.classList.toggle('is-flipped');
              if (flashcardElement.classList.contains('is-flipped')) {
                 flashcardMessage.textContent = "Cliquez sur la carte pour voir la question.";
@@ -452,14 +694,16 @@
         }
 
         function nextFlashcard() {
-            const courseFlashcards = coursesData[currentCourseKey].flashcards;
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            const courseFlashcards = combinedCourses[currentCourseKey].flashcards;
             if (!courseFlashcards || courseFlashcards.length === 0) return;
             currentFlashcardIndex = (currentFlashcardIndex + 1) % courseFlashcards.length;
             displayFlashcard();
         }
 
         function displayQcm() {
-             if (!coursesData[currentCourseKey] || !coursesData[currentCourseKey].qcm) { 
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+             if (!combinedCourses[currentCourseKey] || !combinedCourses[currentCourseKey].qcm) { 
                 qcmQuestionElement.textContent = "Erreur : Données de QCM non trouvées pour ce cours.";
                 qcmOptionsContainer.innerHTML = "";
                 submitQcmBtn.classList.add('hidden');
@@ -467,7 +711,7 @@
                 qcmCounter.textContent = "0/0";
                 return;
             }
-            const courseQCMs = coursesData[currentCourseKey].qcm;
+            const courseQCMs = combinedCourses[currentCourseKey].qcm;
             if (courseQCMs.length === 0) { 
                 qcmQuestionElement.textContent = "Aucun QCM disponible pour ce cours.";
                 qcmOptionsContainer.innerHTML = "";
@@ -529,8 +773,8 @@
                 qcmFeedback.classList.remove('hidden');
                 return;
             }
-
-            const currentQ = coursesData[currentCourseKey].qcm[currentQcmIndex];
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            const currentQ = combinedCourses[currentCourseKey].qcm[currentQcmIndex];
             const cleanedStoredCorrectAnswer = currentQ.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();
 
             const isCorrect = selectedQcmOption === cleanedStoredCorrectAnswer;
@@ -562,7 +806,8 @@
         }
 
         function nextQcm() {
-            const courseQCMs = coursesData[currentCourseKey].qcm;
+            const combinedCourses = {...gitHubCoursesData, ...userCoursesData };
+            const courseQCMs = combinedCourses[currentCourseKey].qcm;
             if (!courseQCMs || courseQCMs.length === 0) return;
             currentQcmIndex = (currentQcmIndex + 1) % courseQCMs.length;
             displayQcm();
@@ -576,7 +821,269 @@
             });
         }
 
+        function saveNewCourse() {
+            const courseName = newCourseNameInput.value.trim();
+            const courseDataJSON = newCourseDataTextarea.value.trim();
+            addCourseFeedback.classList.add('hidden');
+
+            if (!courseName) {
+                addCourseFeedback.textContent = "Veuillez donner un nom à votre cours.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            if (!courseDataJSON) {
+                addCourseFeedback.textContent = "Veuillez coller les données JSON générées.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            let newCourseContent;
+            try {
+                newCourseContent = JSON.parse(courseDataJSON);
+            } catch (error) {
+                addCourseFeedback.textContent = "Erreur : Le format JSON est invalide.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                console.error("JSON_PARSE_ERROR: ", error);
+                return;
+            }
+
+            if (!newCourseContent.title || typeof newCourseContent.title !== 'string' ||
+                !Array.isArray(newCourseContent.flashcards) || 
+                !Array.isArray(newCourseContent.qcm)) {
+                addCourseFeedback.textContent = "Erreur : Structure JSON incorrecte (title, flashcards, qcm requis).";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+            
+            const flashcardsValid = newCourseContent.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
+            const qcmValid = newCourseContent.qcm.every(q => {
+                if (typeof q.question !== 'string' || !Array.isArray(q.options) || typeof q.correctAnswer !== 'string') return false;
+                const cleanedCorrectAnswer = q.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();
+                return q.options.includes(cleanedCorrectAnswer);
+            });
+
+            if (!flashcardsValid || !qcmValid) {
+                 addCourseFeedback.textContent = "Erreur : Structure interne des flashcards/QCM incorrecte.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            const courseKey = "user-" + courseName.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now();
+            
+            if (gitHubCoursesData[courseKey] || gitHubCoursesData[courseName.toLowerCase().replace(/\s+/g, '-')]) { // Check against potential GitHub key format too
+                 addCourseFeedback.textContent = "Erreur : Un cours partagé avec un nom/clé similaire existe déjà. Veuillez choisir un autre nom pour votre cours personnel.";
+                addCourseFeedback.className = 'feedback-message feedback-incorrect';
+                addCourseFeedback.classList.remove('hidden');
+                return;
+            }
+
+            userCoursesData[courseKey] = {
+                title: courseName, 
+                flashcards: newCourseContent.flashcards,
+                qcm: newCourseContent.qcm 
+            };
+            
+            saveUserCoursesToLocalStorage(); 
+
+            addCourseFeedback.textContent = `Le cours "${courseName}" a été ajouté avec succès !`;
+            addCourseFeedback.className = 'feedback-message feedback-correct';
+            addCourseFeedback.classList.remove('hidden');
+            
+            newCourseNameInput.value = ''; 
+            newCourseDataTextarea.value = '';
+
+            setTimeout(() => {
+                showWelcomeScreen();
+            }, 2000);
+        }
+
+        function exportCourses() {
+            const allCoursesToExport = {...gitHubCoursesData, ...userCoursesData}; 
+            if (Object.keys(allCoursesToExport).length === 0) {
+                ioFeedback.textContent = "Aucun cours à exporter.";
+                ioFeedback.style.color = "orange";
+                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                return;
+            }
+            try {
+                const jsonData = JSON.stringify(allCoursesToExport, null, 2); 
+                const blob = new Blob([jsonData], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'mes_cours_revision_complets.json';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                ioFeedback.textContent = "Tous les cours ont été exportés avec succès !";
+                ioFeedback.style.color = "green";
+            } catch (error) {
+                console.error("EXPORT_ERROR:", error);
+                ioFeedback.textContent = "Erreur lors de l'exportation des cours.";
+                ioFeedback.style.color = "red";
+            }
+            setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+        }
+
+        function handleImportFile(event) {
+            const file = event.target.files[0];
+            ioFeedback.textContent = ''; 
+            if (!file) return;
+
+            if (file.type !== "application/json") {
+                ioFeedback.textContent = "Erreur : Veuillez sélectionner un fichier JSON.";
+                ioFeedback.style.color = "red";
+                setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                importFile.value = ''; 
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let importedData;
+                try {
+                    importedData = JSON.parse(e.target.result);
+                } catch (error) {
+                    console.error("IMPORT_PARSE_ERROR:", error);
+                    ioFeedback.textContent = "Erreur : Le fichier JSON importé est invalide.";
+                    ioFeedback.style.color = "red";
+                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                    importFile.value = ''; 
+                    return;
+                }
+
+                if (typeof importedData !== 'object' || importedData === null) {
+                    ioFeedback.textContent = "Erreur : Le fichier JSON importé n'est pas un objet de cours valide.";
+                    ioFeedback.style.color = "red";
+                    setTimeout(() => { ioFeedback.textContent = ''; }, 3000);
+                    importFile.value = ''; 
+                    return;
+                }
+                
+                let coursesAddedCount = 0;
+                let coursesUpdatedCount = 0;
+                let coursesSkippedCount = 0;
+
+                for (const keyInImport in importedData) {
+                    if (Object.hasOwnProperty.call(importedData, keyInImport)) {
+                        const course = importedData[keyInImport];
+                        if (course && typeof course.title === 'string' && Array.isArray(course.flashcards) && Array.isArray(course.qcm)) {
+                            const flashcardsValid = course.flashcards.every(fc => typeof fc.question === 'string' && typeof fc.answer === 'string');
+                            const qcmValid = course.qcm.every(q => {
+                                if (typeof q.question !== 'string' || !Array.isArray(q.options) || typeof q.correctAnswer !== 'string') return false;
+                                const cleanedCorrectAnswer = q.correctAnswer.replace(/\s*\[cite:.*?\]\s*$/, "").trim();
+                                return q.options.includes(cleanedCorrectAnswer);
+                            });
+
+                            if (flashcardsValid && qcmValid) {
+                                // Ne pas écraser ou ajouter si la clé correspond à un cours GitHub
+                                if (gitHubCoursesData[keyInImport]) {
+                                    console.warn(`IMPORT_SKIP: Le cours importé avec la clé "${keyInImport}" (${course.title}) correspond à un cours partagé GitHub et ne sera pas ajouté aux cours personnels pour éviter les conflits.`);
+                                    coursesSkippedCount++;
+                                } else { // Ajouter ou mettre à jour dans userCoursesData
+                                    if (userCoursesData[keyInImport]) {
+                                        coursesUpdatedCount++;
+                                    } else {
+                                        coursesAddedCount++;
+                                    }
+                                    userCoursesData[keyInImport] = course; 
+                                }
+                            } else {
+                                console.warn(`IMPORT_INVALID_STRUCTURE: Cours importé avec la clé '${keyInImport}' a une structure interne invalide et a été ignoré.`);
+                                coursesSkippedCount++;
+                            }
+                        } else {
+                            console.warn(`IMPORT_INVALID_COURSE: Cours importé avec la clé '${keyInImport}' a une structure principale invalide et a été ignoré.`);
+                            coursesSkippedCount++;
+                        }
+                    }
+                }
+                
+                if (coursesAddedCount > 0 || coursesUpdatedCount > 0) {
+                    saveUserCoursesToLocalStorage();
+                    populateCourseList();
+                    ioFeedback.textContent = `${coursesAddedCount} cours personnels ajoutés, ${coursesUpdatedCount} mis à jour.`;
+                    if (coursesSkippedCount > 0) {
+                        ioFeedback.textContent += ` ${coursesSkippedCount} cours ignorés (clés réservées ou structure invalide).`;
+                    }
+                    ioFeedback.style.color = "green";
+                } else if (coursesSkippedCount > 0) {
+                    ioFeedback.textContent = `Aucun nouveau cours personnel importé. ${coursesSkippedCount} cours ignorés (clés réservées ou structure invalide).`;
+                     ioFeedback.style.color = "orange";
+                } else {
+                     ioFeedback.textContent = "Aucun cours à importer ou structure de fichier non reconnue.";
+                     ioFeedback.style.color = "orange";
+                }
+                setTimeout(() => { ioFeedback.textContent = ''; }, 5000);
+                importFile.value = ''; 
+            };
+            reader.readAsText(file);
+        }
+
+
         // --- Écouteurs d'événements ---
+        showAddCourseSectionBtn.addEventListener('click', showAddCourseScreen);
+        saveCourseBtn.addEventListener('click', saveNewCourse);
+        backToWelcomeFromAddBtn.addEventListener('click', showWelcomeScreen);
+        
+        copyPromptBtn.addEventListener('click', () => {
+            const textToCopy = GEMINI_PROMPT;
+            copyPromptFeedback.classList.add('hidden'); 
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(textToCopy)
+                    .then(() => {
+                        copyPromptFeedback.textContent = "Copié !";
+                        copyPromptFeedback.style.color = "green";
+                        copyPromptFeedback.classList.remove('hidden');
+                        setTimeout(() => { copyPromptFeedback.classList.add('hidden'); }, 2000);
+                    })
+                    .catch(err => {
+                        console.warn("COPY_FALLBACK: navigator.clipboard.writeText a échoué: ", err);
+                        fallbackCopyTextToClipboard(textToCopy);
+                    });
+            } else {
+                console.warn("COPY_FALLBACK: navigator.clipboard non disponible.");
+                fallbackCopyTextToClipboard(textToCopy);
+            }
+        });
+
+        function fallbackCopyTextToClipboard(text) {
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            textArea.style.top = "0";
+            textArea.style.left = "0";
+            textArea.style.position = "fixed";
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                const successful = document.execCommand('copy');
+                if (successful) {
+                    copyPromptFeedback.textContent = "Copié (fallback) !";
+                    copyPromptFeedback.style.color = "green";
+                } else {
+                    copyPromptFeedback.textContent = "Échec copie. Copiez manuellement.";
+                    copyPromptFeedback.style.color = "red";
+                }
+            } catch (err) {
+                console.error("COPY_FALLBACK_ERROR: ", err);
+                copyPromptFeedback.textContent = "Échec copie. Copiez manuellement.";
+                copyPromptFeedback.style.color = "red";
+            }
+            copyPromptFeedback.classList.remove('hidden');
+            setTimeout(() => { copyPromptFeedback.classList.add('hidden'); }, 3000);
+            document.body.removeChild(textArea);
+        }
+
+
         showFlashcardsBtn.addEventListener('click', showFlashcardsScreen);
         showQcmBtn.addEventListener('click', showQcmScreen);
 
@@ -590,10 +1097,15 @@
         backToModeSelectionFromFlashcardsBtn.addEventListener('click', showModeSelectionScreen);
         backToModeSelectionFromQcmBtn.addEventListener('click', showModeSelectionScreen);
 
+        exportCoursesBtn.addEventListener('click', exportCourses);
+        importFile.addEventListener('change', handleImportFile);
+
         // --- Initialisation ---
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             showWelcomeScreen(); 
-            loadCoursesFromGitHub(); 
+            loadUserCoursesFromLocalStorage(); 
+            await loadCoursesFromGitHub(); 
+            populateCourseList(); // S'assurer que la liste est peuplée après tous les chargements
         });
     </script>
 </body>
